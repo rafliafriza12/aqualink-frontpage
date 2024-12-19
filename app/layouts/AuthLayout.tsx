@@ -17,7 +17,6 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
   return (
     <>
       <CssBaseline />
-      <h1>haloooo</h1>
       <Container maxWidth="sm">{children}</Container>
     </>
   );

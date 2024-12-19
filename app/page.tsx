@@ -1,14 +1,6 @@
-import { Button, Typography } from "@mui/material";
+import HomePage from "./(pages)/home/page";
+const Home: React.FC = () => {
+  return <HomePage />;
+};
 
-export default function Home() {
-  return (
-    <div>
-      <Typography variant="h4" gutterBottom>
-        Hello, Next.js with Material UI!
-      </Typography>
-      <Button variant="contained" color="primary">
-        Click Me
-      </Button>
-    </div>
-  );
-}
+export default Home;
