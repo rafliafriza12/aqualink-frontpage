@@ -1,5 +1,6 @@
-import Image from "next/image";
+import HomePage from "./(pages)/home/page";
+const Home: React.FC = () => {
+  return <HomePage />;
+};
 
-export default function Home() {
-  return <div></div>;
-}
+export default Home;

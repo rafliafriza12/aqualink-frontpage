@@ -3,12 +3,12 @@ import { Provider } from "react-redux";
 import { AuthProvider } from "../hooks/UseAuth";
 import { store } from "../store";
 import { ProviderLayoutProps } from "../types";
-
+import AppLayout from "./AppLayout";
 const ProviderLayout: React.FC<ProviderLayoutProps> = ({ children }) => {
   return (
     <Provider store={store}>
       <AuthProvider>
-        {children} {/* Menyertakan children agar layout bekerja dengan baik */}
+        <AppLayout>{children}</AppLayout>
       </AuthProvider>
     </Provider>
   );
