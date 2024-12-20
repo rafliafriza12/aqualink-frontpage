@@ -32,7 +32,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import { IsDesktop } from "@/app/hooks";
 import Avatar from "@mui/material/Avatar";
-import AccountCircle from "@mui/icons-material/AccountCircle";
+import { useAuth } from "@/app/hooks/UseAuth";
 
 interface AppBarProps extends MuiAppBarProps {
   open?: boolean;
@@ -44,6 +44,7 @@ const Navbar = () => {
   const ref = useRef<HTMLDivElement>(null);
   const isDesktop = IsDesktop();
   const theme = useTheme();
+  const Auth = useAuth();
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -198,7 +199,9 @@ const Navbar = () => {
         <List>
           {["Kredit Air", "Transaksi", "Keluar"].map((text, index) => (
             <ListItem key={text} disablePadding>
-              <ListItemButton>
+              <ListItemButton
+                onClick={() => (text === "Keluar" ? Auth.logout() : null)}
+              >
                 <ListItemIcon>
                   {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
                 </ListItemIcon>
@@ -252,7 +255,7 @@ const Navbar = () => {
           <BottomNavigationAction
             label="Profile"
             icon={
-              <Link href={"#"}>
+              <Link href={"/profile"}>
                 <PersonOutlineOutlinedIcon sx={{ color: "white" }} />
               </Link>
             }
