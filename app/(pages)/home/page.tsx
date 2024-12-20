@@ -49,7 +49,11 @@ const HomePage: React.FC = () => {
     if (!auth.auth.isAuthenticated) {
       navigation.replace("/auth/login");
     }
-  }, []);
+  }, [auth.auth.isAuthenticated, navigation]);
+
+  if (!auth.auth.isAuthenticated) {
+    return null; // Hindari rendering konten saat redirect
+  }
 
   return isDesktop ? (
     <div className="w-full flex flex-col gap-10">
@@ -97,7 +101,7 @@ const HomePage: React.FC = () => {
                           padding: "auto 0px",
                         }}
                       >
-                        Lihat Detail
+                        Selengkapnya
                       </Link>
                     </Grid>
                   </Grid>
@@ -270,7 +274,7 @@ const HomePage: React.FC = () => {
                     padding: "auto 0px",
                   }}
                 >
-                  Lihat Detail
+                  Selengkapnya
                 </Link>
               </Grid>
             </Grid>
