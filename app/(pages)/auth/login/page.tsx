@@ -1,6 +1,5 @@
 "use client";
 import { useRouter } from "next/navigation";
-import React from "react";
 import { useAuth } from "@/app/hooks/UseAuth";
 import { Grid, Typography } from "@mui/material";
 import Logo from "@/app/components/logo/Logo";
@@ -10,6 +9,8 @@ import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import LoadingButton from "@mui/lab/LoadingButton";
+import { useEffect } from "react";
+import Link from "next/link";
 
 const Login: React.FC = () => {
   const navigation = useRouter();
@@ -32,9 +33,17 @@ const Login: React.FC = () => {
       },
     };
     Auth.login(data);
-
-    navigation.replace("/");
   };
+
+  useEffect(() => {
+    if (!Auth.auth.isAuthenticated) {
+      navigation.replace("/auth/login");
+    }
+  }, [Auth.auth.isAuthenticated, navigation]);
+
+  if (Auth.auth.isAuthenticated) {
+    return null; // Hindari rendering konten saat redirect
+  }
 
   return (
     <div className="h-screen w-screen overflow-hidden flex justify-center items-center">
@@ -153,6 +162,12 @@ const Login: React.FC = () => {
               Lanjut
             </Typography>
           </LoadingButton>
+          <Typography variant="body2" fontWeight={500} sx={{ color: "white" }}>
+            Belum memiliki akun ?{" "}
+            <Link href={"/auth/register"} className=" underline">
+              Daftar
+            </Link>
+          </Typography>
         </div>
       </Grid>
     </div>

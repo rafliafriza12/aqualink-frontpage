@@ -16,7 +16,11 @@ const UserLayout: React.FC<UserLayoutProps> = ({ children }) => {
   const auth = useAppSelector((state) => state.auth);
   const isDesktop = IsDesktop();
 
-  useEffect(() => {}, [auth.isAuthenticated]);
+  useEffect(() => {
+    auth.isAuthenticated
+      ? navigation.replace("/")
+      : navigation.replace("/auth/login");
+  }, [auth.isAuthenticated]);
 
   return auth.isAuthenticated ? (
     <>
