@@ -1,3 +1,4 @@
+"use client";
 // UserLayout.tsx
 import React from "react";
 import { CssBaseline, Box, Container, Typography } from "@mui/material";
@@ -8,21 +9,19 @@ import Navbar from "../components/navbar/Index";
 import { CardHeader } from "@mui/material";
 import Image from "next/image";
 import { IsDesktop } from "../hooks";
+import { useEffect } from "react";
 
 const UserLayout: React.FC<UserLayoutProps> = ({ children }) => {
   const navigation = useRouter();
   const auth = useAppSelector((state) => state.auth);
   const isDesktop = IsDesktop();
 
-  if (!auth.isAuthenticated) {
-    navigation.replace("/auth/login");
-    return null;
-  }
+  useEffect(() => {}, [auth.isAuthenticated]);
 
-  return (
+  return auth.isAuthenticated ? (
     <>
       <CssBaseline />
-      <Container maxWidth="xl" sx={{ pt: isDesktop ? 15 : 0 }}>
+      <Container maxWidth="xl" sx={{ py: isDesktop ? 15 : 0 }}>
         {!isDesktop && (
           <CardHeader
             sx={{ pl: 0, py: 4 }}
@@ -44,6 +43,11 @@ const UserLayout: React.FC<UserLayoutProps> = ({ children }) => {
         {children}
         <Navbar />
       </Container>
+    </>
+  ) : (
+    <>
+      <CssBaseline />
+      {children}
     </>
   );
 };
