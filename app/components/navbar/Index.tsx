@@ -27,9 +27,12 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
-import { useMediaQuery } from "react-responsive";
 import { useState } from "react";
+import MenuItem from "@mui/material/MenuItem";
+import Menu from "@mui/material/Menu";
 import { IsDesktop } from "@/app/hooks";
+import Avatar from "@mui/material/Avatar";
+import AccountCircle from "@mui/icons-material/AccountCircle";
 
 interface AppBarProps extends MuiAppBarProps {
   open?: boolean;
@@ -42,6 +45,15 @@ const Navbar = () => {
   const isDesktop = IsDesktop();
   const theme = useTheme();
   const [open, setOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -85,7 +97,18 @@ const Navbar = () => {
   return isDesktop ? (
     <>
       <CssBaseline />
-      <AppBar sx={{ backgroundColor: "#001740" }} position="fixed" open={open}>
+      <AppBar
+        sx={{
+          backgroundColor: "#001740",
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          px: 4,
+        }}
+        position="fixed"
+        open={open}
+      >
         <Toolbar>
           <IconButton
             color="inherit"
@@ -105,6 +128,34 @@ const Navbar = () => {
             AquaLink
           </Typography>
         </Toolbar>
+
+        <div>
+          <IconButton
+            size="large"
+            aria-label="account of current user"
+            aria-controls="menu-appbar"
+            aria-haspopup="true"
+            onClick={handleMenu}
+            color="inherit"
+          >
+            <Avatar sx={{ bgcolor: "#ffffff", color: "#001740" }}>RA</Avatar>
+          </IconButton>
+          <Menu
+            sx={{
+              position: "fixed",
+              left: "90%",
+              top: "5%",
+            }}
+            id="menu-appbar"
+            anchorEl={anchorEl}
+            keepMounted
+            open={Boolean(anchorEl)}
+            onClose={handleClose}
+          >
+            <MenuItem onClick={handleClose}>Profile</MenuItem>
+            <MenuItem onClick={handleClose}>My account</MenuItem>
+          </Menu>
+        </div>
       </AppBar>
       <Drawer
         sx={{
