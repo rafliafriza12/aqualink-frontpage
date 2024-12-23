@@ -47,6 +47,24 @@ const Navbar = () => {
   const Auth = useAuth();
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const mainMenu: any = [
+    {
+      label: "Beranda",
+      path: "/",
+    },
+    {
+      label: "Marketplace",
+      path: "/marketplace",
+    },
+    {
+      label: "Lapor Kebocoran",
+      path: "/",
+    },
+    {
+      label: "Profil",
+      path: "/profile",
+    },
+  ];
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -171,7 +189,18 @@ const Navbar = () => {
         anchor="left"
         open={open}
       >
-        <DrawerHeader>
+        <DrawerHeader
+          sx={{
+            display: "flex",
+            width: "100%",
+            justifyContent: "space-between",
+            alignItems: "center",
+            pl: 3,
+          }}
+        >
+          <Typography variant="body1" fontWeight={600}>
+            Menu
+          </Typography>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === "ltr" ? (
               <ChevronLeftIcon />
@@ -182,18 +211,18 @@ const Navbar = () => {
         </DrawerHeader>
         <Divider />
         <List>
-          {["Beranda", "Marketplace", "Lapor Kebocoran", "Profil"].map(
-            (text, index) => (
-              <ListItem key={text} disablePadding>
+          {mainMenu.map((menu: any, index: number) => (
+            <ListItem key={index} disablePadding>
+              <Link href={menu.path} className="w-full">
                 <ListItemButton>
                   <ListItemIcon>
                     {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
                   </ListItemIcon>
-                  <ListItemText primary={text} />
+                  <ListItemText primary={menu.label} />
                 </ListItemButton>
-              </ListItem>
-            )
-          )}
+              </Link>
+            </ListItem>
+          ))}
         </List>
         <Divider />
         <List>
