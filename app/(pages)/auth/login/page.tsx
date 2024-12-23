@@ -11,6 +11,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { useEffect } from "react";
 import Link from "next/link";
+import { IsDesktop } from "@/app/hooks";
 
 const Login: React.FC = () => {
   const navigation = useRouter();
@@ -19,18 +20,17 @@ const Login: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const Auth = useAuth();
+  const isDesktop = IsDesktop();
 
   const onLogin = () => {
     setIsLoading(!isLoading);
     const data: any = {
-      data: {
-        user: {
-          id: "123456",
-          name: "Rafli Afriza Nugraha",
-          email: "rafli@gmail.com",
-        },
-        token: "Bearer alkjbdyaewbr98y4rqalisudgv9q4bf",
+      user: {
+        id: "123456",
+        name: "Rafli Afriza Nugraha",
+        email: "rafli@gmail.com",
       },
+      token: "Bearer alkjbdyaewbr98y4rqalisudgv9q4bf",
     };
     Auth.login(data);
   };
@@ -46,7 +46,11 @@ const Login: React.FC = () => {
   }
 
   return (
-    <div className="h-screen w-screen overflow-hidden flex justify-center items-center">
+    <div
+      className={`${
+        isDesktop ? "gap-[50px]" : ""
+      } h-screen w-screen overflow-hidden flex justify-center items-center`}
+    >
       <Grid
         display="flex"
         flexDirection="column"
@@ -54,10 +58,20 @@ const Login: React.FC = () => {
         width="100%"
         overflow="hidden"
       >
-        <div className="h-[40vh] w-full flex justify-center items-center">
+        <div
+          className={`${
+            isDesktop ? "" : "h-[40vh]"
+          }  w-full flex justify-center items-center`}
+        >
           <Logo />
         </div>
-        <div className="h-[60vh] w-full bg-[#3D6DCC] rounded-t-3xl flex flex-col items-center p-6 gap-14 overflow-hidden">
+        <div
+          className={`${
+            isDesktop
+              ? " mt-4 w-[50%] rounded-xl px-[10%]"
+              : "h-[60vh] w-full rounded-t-3xl"
+          }  bg-[#3D6DCC]  flex flex-col items-center p-6 gap-14 overflow-hidden`}
+        >
           <Typography variant="h4" fontWeight={600} sx={{ color: "white" }}>
             Masuk
           </Typography>

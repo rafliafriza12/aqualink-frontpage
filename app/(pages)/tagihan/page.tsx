@@ -2,24 +2,25 @@
 import { Grid, Typography, Card, CardContent } from "@mui/material";
 import { useAuth } from "@/app/hooks/UseAuth";
 import Link from "next/link";
+import CreditBill from "@/app/components/card/CreditBill";
 import { IsDesktop } from "@/app/hooks";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import WaterCredit from "@/app/components/card/WaterCredit";
 const Marketplace: React.FC = () => {
   const navigation = useRouter();
-  const auth = useAuth();
+  const Auth = useAuth();
   const isDesktop = IsDesktop();
 
   useEffect(() => {
-    if (!auth.auth.isAuthenticated) {
+    if (!Auth.auth.isAuthenticated) {
       navigation.replace("/auth/login");
     }
-  }, [auth.auth.isAuthenticated, navigation]);
+  }, [Auth.auth.isAuthenticated, navigation]);
 
-  if (!auth.auth.isAuthenticated) {
+  if (!Auth.auth.isAuthenticated) {
     return null; // Hindari rendering konten saat redirect
   }
+
   const waterCredits: any = [
     {
       field: "1",
@@ -60,28 +61,16 @@ const Marketplace: React.FC = () => {
             fontWeight={600}
             fontSize={isDesktop ? 20 : 14}
           >
-            Marketplace Kredit Air
+            Tagihan Kredit Air
           </Typography>
           <Typography
             variant={isDesktop ? "body1" : "body2"}
             fontWeight={500}
             fontSize={isDesktop ? 16 : 12}
           >
-            {auth.auth.user?.name} (ID : {auth?.auth?.user?.id ?? "1111111111"})
+            {Auth.auth.user?.name} (ID : {Auth?.auth?.user?.id ?? "1111111111"})
           </Typography>
         </Grid>
-        <Link
-          href={"/tagihan"}
-          className="flex justify-center items-center bg-[#001740] px-2 text-white rounded-md"
-        >
-          <Typography
-            variant="caption"
-            fontWeight={600}
-            fontSize={isDesktop ? 14 : 12}
-          >
-            Tagihan Kredit Air
-          </Typography>
-        </Link>
       </Grid>
 
       <Grid
@@ -94,7 +83,7 @@ const Marketplace: React.FC = () => {
           {waterCredits.map((waterCredit: any, i: number) => {
             return (
               <Grid lg={5.6} key={i}>
-                <WaterCredit />
+                <CreditBill />
               </Grid>
             );
           })}
