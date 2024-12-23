@@ -8,7 +8,9 @@ import Button from "@mui/material/Button";
 import Google from "@/app/components/logo/Google";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import Link from "next/link";
+import { IsDesktop } from "@/app/hooks";
 const Register: React.FC = () => {
+  const isDesktop = IsDesktop();
   const navigation = useRouter();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -47,10 +49,20 @@ const Register: React.FC = () => {
         width="100%"
         overflow="hidden"
       >
-        <div className="h-[40vh] w-full flex justify-center items-center">
+        <div
+          className={`${
+            isDesktop ? "" : "h-[40vh]"
+          }  w-full flex justify-center items-center`}
+        >
           <Logo />
         </div>
-        <div className="h-[60vh] w-full bg-[#3D6DCC] rounded-t-3xl flex flex-col items-center p-6 gap-14 overflow-hidden">
+        <div
+          className={`${
+            isDesktop
+              ? " mt-4 w-[50%] rounded-xl px-[10%]"
+              : "h-[60vh] w-full rounded-t-3xl"
+          }  bg-[#3D6DCC]  flex flex-col items-center p-6 gap-14 overflow-hidden`}
+        >
           <Typography variant="h5" fontWeight={600} sx={{ color: "white" }}>
             Selamat Datang
           </Typography>

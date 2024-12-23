@@ -10,6 +10,7 @@ import { CardHeader } from "@mui/material";
 import Image from "next/image";
 import { IsDesktop } from "../hooks";
 import { useEffect } from "react";
+import ArrowBackOutlinedIcon from "@mui/icons-material/ArrowBackOutlined";
 
 const UserLayout: React.FC<UserLayoutProps> = ({ children }) => {
   const navigation = useRouter();
