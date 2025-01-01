@@ -58,7 +58,7 @@ const Navbar = () => {
     },
     {
       label: "Lapor Kebocoran",
-      path: "/",
+      path: "/lapor-kebocoran",
     },
     {
       label: "Profil",
@@ -172,7 +172,7 @@ const Navbar = () => {
             onClose={handleClose}
           >
             <MenuItem onClick={handleClose}>Profile</MenuItem>
-            <MenuItem onClick={handleClose}>My account</MenuItem>
+            <MenuItem onClick={() => Auth.logout()}>Keluar</MenuItem>
           </Menu>
         </div>
       </AppBar>
@@ -213,7 +213,11 @@ const Navbar = () => {
         <List>
           {mainMenu.map((menu: any, index: number) => (
             <ListItem key={index} disablePadding>
-              <Link href={menu.path} className="w-full">
+              <Link
+                onClick={() => setOpen(!open)}
+                href={menu.path}
+                className="w-full"
+              >
                 <ListItemButton>
                   <ListItemIcon>
                     {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
@@ -226,16 +230,29 @@ const Navbar = () => {
         </List>
         <Divider />
         <List>
-          {["Kredit Air", "Transaksi", "Keluar"].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton
-                onClick={() => (text === "Keluar" ? Auth.logout() : null)}
-              >
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
+          {[
+            { text: "Kredit Air", path: "/tagihan" },
+            { text: "Transaksi", path: null },
+            { text: "Keluar", path: null },
+          ].map((item: any, index: number) => (
+            <ListItem key={index} disablePadding>
+              {item?.text !== "Keluar" ? (
+                <Link href={item?.path ?? ""} className="w-full">
+                  <ListItemButton onClick={() => setOpen(!open)}>
+                    <ListItemIcon>
+                      {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                    </ListItemIcon>
+                    <ListItemText primary={item?.text} />
+                  </ListItemButton>
+                </Link>
+              ) : (
+                <ListItemButton onClick={() => Auth.logout()}>
+                  <ListItemIcon>
+                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                  </ListItemIcon>
+                  <ListItemText primary={item?.text} />
+                </ListItemButton>
+              )}
             </ListItem>
           ))}
         </List>
@@ -275,7 +292,7 @@ const Navbar = () => {
           <BottomNavigationAction
             label="Report"
             icon={
-              <Link href={"#"}>
+              <Link href={"/lapor-kebocoran"}>
                 <EditNoteOutlinedIcon sx={{ color: "white" }} />
               </Link>
             }
