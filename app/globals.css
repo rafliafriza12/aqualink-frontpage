@@ -5,3 +5,13 @@
 body {
   overflow-x: hidden;
 }
+
+/* Jika ingin mengubah warna ikon success di seluruh aplikasi */
+.swal2-icon.swal2-success .swal2-success-circular-line-left,
+.swal2-icon.swal2-success .swal2-success-circular-line-right {
+  stroke: #001740 !important; /* Warna hijau ikon sukses diubah menjadi #001740 */
+}
+
+.swal2-icon.swal2-success {
+  color: #001740 !important; /* Mengubah warna ikon sukses menjadi #001740 */
+}
