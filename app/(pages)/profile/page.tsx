@@ -10,9 +10,11 @@ import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined
 import VpnKeyOutlinedIcon from "@mui/icons-material/VpnKeyOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import OutputOutlinedIcon from "@mui/icons-material/OutputOutlined";
+import { IsDesktop } from "@/app/hooks";
 const Profile: React.FC = () => {
   const navigation = useRouter();
   const auth = useAuth();
+  const isDesktop = IsDesktop();
   useEffect(() => {
     if (!auth.auth.isAuthenticated) {
       navigation.replace("/auth/login");
@@ -40,7 +42,7 @@ const Profile: React.FC = () => {
         </Grid>
       </Grid>
       <div className="w-full flex flex-col gap-5">
-        <Link href={"#"} className="w-full">
+        <Link href={"#"} className={isDesktop ? "w-[35%]" : "w-full"}>
           <Grid
             display="flex"
             alignItems="center"
@@ -58,7 +60,7 @@ const Profile: React.FC = () => {
             </Typography>
           </Grid>
         </Link>
-        <Link href={"#"} className="w-full">
+        <Link href={"#"} className={isDesktop ? "w-[35%]" : "w-full"}>
           <Grid
             display="flex"
             alignItems="center"
@@ -76,7 +78,7 @@ const Profile: React.FC = () => {
             </Typography>
           </Grid>
         </Link>
-        <Link href={"#"} className="w-full">
+        <Link href={"#"} className={isDesktop ? "w-[35%]" : "w-full"}>
           <Grid
             display="flex"
             alignItems="center"
@@ -94,7 +96,10 @@ const Profile: React.FC = () => {
             </Typography>
           </Grid>
         </Link>
-        <button onClick={() => auth.logout()} className="w-full">
+        <button
+          onClick={() => auth.logout()}
+          className={isDesktop ? "w-[35%]" : "w-full"}
+        >
           <Grid
             display="flex"
             alignItems="center"

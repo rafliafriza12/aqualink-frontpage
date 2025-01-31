@@ -12,8 +12,22 @@ import AddIcon from "@mui/icons-material/Add";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  useMapEvents,
+} from "react-leaflet";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import "leaflet/dist/leaflet.css";
 import Link from "next/link";
+import L from "leaflet";
+
+interface Coordinates {
+  lat: number;
+  lng: number;
+}
 const LaporKebocoran: React.FC = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -23,6 +37,11 @@ const LaporKebocoran: React.FC = () => {
   const isDesktop = IsDesktop();
   const navigation = useRouter();
   const auth = useAuth();
+  const [position, setPosition] = useState<number | any>(null);
+
+  const handleMapClick = (coords: any) => {
+    setPosition(coords); // Simpan koordinat lokasi klik
+  };
 
   const datas: any = [
     {
@@ -47,6 +66,26 @@ const LaporKebocoran: React.FC = () => {
     setIsLoading(!isLoading);
     setShowModal(!showModal);
   };
+
+  const LocationMarker: React.FC<{
+    onMapClick: (coords: Coordinates) => void;
+  }> = ({ onMapClick }) => {
+    useMapEvents({
+      click(e) {
+        const { lat, lng } = e.latlng; // Koordinat lokasi klik
+        onMapClick({ lat, lng }); // Kirim data koordinat ke fungsi parent
+      },
+    });
+
+    return null;
+  };
+
+  L.Icon.Default.mergeOptions({
+    iconRetinaUrl:
+      "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+    iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+    shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+  });
 
   useEffect(() => {
     if (!auth.auth.isAuthenticated) {
@@ -223,6 +262,30 @@ const LaporKebocoran: React.FC = () => {
                     },
                   }}
                 />
+
+                <Grid sx={{ width: "100%", height: "50vh" }} overflow="hidden">
+                  <MapContainer
+                    className="w-full h-full"
+                    center={{ lat: 5.5555773881451, lng: 95.32125260223387 }}
+                    zoom={13}
+                    scrollWheelZoom={false}
+                  >
+                    <TileLayer
+                      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    />
+                    <LocationMarker onMapClick={handleMapClick} />
+                    {position && (
+                      <Marker position={[position.lat, position.lng]}>
+                        <Popup>
+                          Koordinat: <br /> Lat: {position.lat}, Lng:{" "}
+                          {position.lng}
+                        </Popup>
+                      </Marker>
+                    )}
+                  </MapContainer>
+                  ,
+                </Grid>
                 <LoadingButton
                   loading={isLoading}
                   onClick={() => handleClick()}

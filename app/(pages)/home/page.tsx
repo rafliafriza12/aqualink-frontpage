@@ -93,7 +93,7 @@ const HomePage: React.FC = () => {
                     </Grid>
                     <Grid item xs={4} sx={{ px: 0 }} textAlign="right">
                       <Link
-                        href={"#"}
+                        href={"/wallet"}
                         style={{
                           textDecoration: "underline",
                           fontSize: "14px",
@@ -241,7 +241,13 @@ const HomePage: React.FC = () => {
         <Typography variant="h6" fontWeight={600}>
           Kredit Air Terdekat
         </Typography>
-        <Grid container rowGap={4} columnGap={12} mt={4}>
+        <Grid
+          container
+          display="flex"
+          justifyContent="space-between"
+          width="100%"
+          mt={4}
+        >
           {waterCredits.map((waterCredit: any, i: number) => {
             return (
               <Grid lg={5.6} key={i}>
@@ -266,7 +272,7 @@ const HomePage: React.FC = () => {
               </Grid>
               <Grid item xs={4} sx={{ px: 0 }} textAlign="right">
                 <Link
-                  href={"#"}
+                  href={"/wallet"}
                   style={{
                     textDecoration: "underline",
                     fontSize: "12px",
