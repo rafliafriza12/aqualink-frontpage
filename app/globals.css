@@ -1,17 +1,9 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body {
   overflow-x: hidden;
-}
-
-/* Jika ingin mengubah warna ikon success di seluruh aplikasi */
-.swal2-icon.swal2-success .swal2-success-circular-line-left,
-.swal2-icon.swal2-success .swal2-success-circular-line-right {
-  stroke: #001740 !important; /* Warna hijau ikon sukses diubah menjadi #001740 */
-}
-
-.swal2-icon.swal2-success {
-  color: #001740 !important; /* Mengubah warna ikon sukses menjadi #001740 */
 }

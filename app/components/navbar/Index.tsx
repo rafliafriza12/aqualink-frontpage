@@ -267,45 +267,46 @@ const Navbar = () => {
           bottom: 0,
           left: 0,
           right: 0,
+          zIndex: 100,
         }}
         elevation={3}
       >
-        <BottomNavigation showLabels sx={{ backgroundColor: "#001740" }}>
+        <BottomNavigation showLabels sx={{ backgroundColor: "#fffff" }}>
           <BottomNavigationAction
             label="Home"
             icon={
               <Link href={"/"}>
-                <HomeOutlinedIcon sx={{ color: "white" }} />
+                <HomeOutlinedIcon sx={{ color: "black" }} />
               </Link>
             }
-            sx={{ color: "white" }}
+            sx={{ color: "black" }}
           />
           <BottomNavigationAction
             label="Marketplace"
             icon={
               <Link href={"/marketplace"}>
-                <WaterDropOutlinedIcon sx={{ color: "white" }} />
+                <WaterDropOutlinedIcon sx={{ color: "black" }} />
               </Link>
             }
-            sx={{ color: "white" }}
+            sx={{ color: "black" }}
           />
           <BottomNavigationAction
             label="Report"
             icon={
               <Link href={"/lapor-kebocoran"}>
-                <EditNoteOutlinedIcon sx={{ color: "white" }} />
+                <EditNoteOutlinedIcon sx={{ color: "black" }} />
               </Link>
             }
-            sx={{ color: "white" }}
+            sx={{ color: "black" }}
           />
           <BottomNavigationAction
             label="Profile"
             icon={
               <Link href={"/profile"}>
-                <PersonOutlineOutlinedIcon sx={{ color: "white" }} />
+                <PersonOutlineOutlinedIcon sx={{ color: "black" }} />
               </Link>
             }
-            sx={{ color: "white" }}
+            sx={{ color: "black" }}
           />
         </BottomNavigation>
       </Paper>
