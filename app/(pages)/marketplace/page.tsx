@@ -67,7 +67,7 @@ const Marketplace: React.FC = () => {
             fontWeight={500}
             fontSize={isDesktop ? 16 : 12}
           >
-            {auth.auth.user?.name} (ID : {auth?.auth?.user?.id ?? "1111111111"})
+            {/* {auth.auth.user?.name} (ID : {auth?.auth?.user?.id ?? "1111111111"}) */}
           </Typography>
         </Grid>
         <Link

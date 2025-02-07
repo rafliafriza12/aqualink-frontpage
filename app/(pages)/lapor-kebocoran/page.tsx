@@ -62,30 +62,30 @@ const LaporKebocoran: React.FC = () => {
     },
   ];
 
-  const handleClick = () => {
-    setIsLoading(!isLoading);
-    setShowModal(!showModal);
-  };
+  // const handleClick = () => {
+  //   setIsLoading(!isLoading);
+  //   setShowModal(!showModal);
+  // };
 
-  const LocationMarker: React.FC<{
-    onMapClick: (coords: Coordinates) => void;
-  }> = ({ onMapClick }) => {
-    useMapEvents({
-      click(e) {
-        const { lat, lng } = e.latlng; // Koordinat lokasi klik
-        onMapClick({ lat, lng }); // Kirim data koordinat ke fungsi parent
-      },
-    });
+  // const LocationMarker: React.FC<{
+  //   onMapClick: (coords: Coordinates) => void;
+  // }> = ({ onMapClick }) => {
+  //   useMapEvents({
+  //     click(e) {
+  //       const { lat, lng } = e.latlng; // Koordinat lokasi klik
+  //       onMapClick({ lat, lng }); // Kirim data koordinat ke fungsi parent
+  //     },
+  //   });
 
-    return null;
-  };
+  //   return null;
+  // };
 
-  L.Icon.Default.mergeOptions({
-    iconRetinaUrl:
-      "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-    iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-    shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-  });
+  // L.Icon.Default.mergeOptions({
+  //   iconRetinaUrl:
+  //     "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+  //   iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+  //   shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+  // });
 
   useEffect(() => {
     if (!auth.auth.isAuthenticated) {
@@ -98,7 +98,7 @@ const LaporKebocoran: React.FC = () => {
   }
   return isDesktop ? (
     <div className=" w-full flex justify-between">
-      <div className=" w-[48.5%] h-[50vh]">
+      {/* <div className=" w-[48.5%] h-[50vh]">
         <Grid display="flex" gap={2} alignItems="center">
           <StickyNote2OutlinedIcon />
           <Typography variant="h6" fontWeight={700}>
@@ -325,11 +325,11 @@ const LaporKebocoran: React.FC = () => {
             />
           )}
         </Grid>
-      </div>
+      </div> */}
     </div>
   ) : (
     <Grid width="100%" display="flex" flexDirection="column" gap={5}>
-      <Typography
+      {/* <Typography
         variant={isDesktop ? "h6" : "body1"}
         fontWeight={600}
         fontSize={isDesktop ? 20 : 14}
@@ -412,7 +412,7 @@ const LaporKebocoran: React.FC = () => {
             </Accordion>
           </Grid>
         </CardContent>
-      </Card>
+      </Card> */}
     </Grid>
   );
 };

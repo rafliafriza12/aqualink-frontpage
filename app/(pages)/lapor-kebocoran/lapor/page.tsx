@@ -38,29 +38,29 @@ const ReportFormMobile: React.FC = () => {
   const auth = useAuth();
   const [position, setPosition] = useState<number | any>(null);
 
-  const handleMapClick = (coords: any) => {
-    setPosition(coords); // Simpan koordinat lokasi klik
-  };
+  // const handleMapClick = (coords: any) => {
+  //   setPosition(coords); // Simpan koordinat lokasi klik
+  // };
 
-  const LocationMarker: React.FC<{
-    onMapClick: (coords: Coordinates) => void;
-  }> = ({ onMapClick }) => {
-    useMapEvents({
-      click(e) {
-        const { lat, lng } = e.latlng; // Koordinat lokasi klik
-        onMapClick({ lat, lng }); // Kirim data koordinat ke fungsi parent
-      },
-    });
+  // const LocationMarker: React.FC<{
+  //   onMapClick: (coords: Coordinates) => void;
+  // }> = ({ onMapClick }) => {
+  //   useMapEvents({
+  //     click(e) {
+  //       const { lat, lng } = e.latlng; // Koordinat lokasi klik
+  //       onMapClick({ lat, lng }); // Kirim data koordinat ke fungsi parent
+  //     },
+  //   });
 
-    return null;
-  };
+  //   return null;
+  // };
 
-  L.Icon.Default.mergeOptions({
-    iconRetinaUrl:
-      "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-    iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-    shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-  });
+  // L.Icon.Default.mergeOptions({
+  //   iconRetinaUrl:
+  //     "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+  //   iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+  //   shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+  // });
 
   const steps = ["Isi formulir", "Verifikasi", "Kirim"];
 
@@ -84,7 +84,7 @@ const ReportFormMobile: React.FC = () => {
 
   return (
     <Grid width="100%" display="flex" flexDirection="column" gap={3} pb={5}>
-      <Typography
+      {/* <Typography
         variant={isDesktop ? "h6" : "body1"}
         fontWeight={600}
         fontSize={isDesktop ? 20 : 14}
@@ -304,7 +304,7 @@ const ReportFormMobile: React.FC = () => {
             )}
           />
         )}
-      </Card>
+      </Card> */}
     </Grid>
   );
 };
