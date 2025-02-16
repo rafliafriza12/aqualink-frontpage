@@ -67,7 +67,7 @@ const Login: React.FC = () => {
   return isDesktop ? null : (
     <div className="w-screen h-screen flex flex-col justify-center items-center p-7 gap-10 font-poppins">
       <div data-aos={"fade-up"} data-aos-duration={"1000"} className="">
-        <Logo size={110} />
+        <Logo size={110} withText={true} />
       </div>
 
       <div className="flex flex-col gap-2 items-center">

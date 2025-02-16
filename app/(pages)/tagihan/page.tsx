@@ -56,6 +56,7 @@ const Marketplace: React.FC = () => {
         alignContent="center"
       >
         <Grid>
+          {" "}
           <Typography
             variant={isDesktop ? "h6" : "body1"}
             fontWeight={600}

@@ -267,101 +267,359 @@ const HomePage: React.FC = () => {
     return null; // Hindari rendering konten saat redirect
   }
 
-  return isDesktop ? //                     Kemarin //                   <Typography variant="body2" fontWeight={500} p={0}> //                   </Typography> //                     Pembayaran diterima //                   <Typography variant="body1" fontWeight={700} p={0}> //                 <Grid item xs={8} display="flex" flexDirection="column"> //               <Grid container spacing={4}> //               /> //                 sx={{ color: "#16D529", fontSize: 30 }} //               <AccountBalanceWalletOutlinedIcon //             <Grid display="flex" alignItems="center" mt={2} gap={2}> //             </Grid> //               </Grid> //                 </Grid> //                   </Typography> //                     2 jam yang lalu //                   <Typography variant="body2" fontWeight={500} p={0}> //                   </Typography> //                     Transaksi terakhir //                   <Typography variant="body1" fontWeight={700} p={0}> //                 <Grid item xs={8} display="flex" flexDirection="column"> //               <Grid container spacing={4}> //               /> //                 sx={{ color: "#1E62EB", fontSize: 30 }} //               <AccessTimeOutlinedIcon //             <Grid display="flex" alignItems="center" mt={2} gap={2}> //             </Grid> //               </Grid> //                 </Grid> //                   </Typography> //                     Aktivitas Terbaru //                   <Typography variant="h6" fontWeight={600}> //                 <Grid item xs={8}> //               <Grid container spacing={4}> //             <Grid display="flex" flexDirection="column" gap={1}> //           <CardContent> //         > //           }} //             borderRadius: "16px", //             boxShadow: "0px 4px 5px grey", //             mb: 4, //           sx={{ //         <Card //       <Grid> //       </Grid> //         </Card> //           </CardContent> //             </Grid> //               </Grid> //                 </Typography> //                   Token Konservasi : 3786 token //                 <Typography variant="body1" fontWeight={500}> //               <Grid xs={12}> //               </Grid> //                 </Typography> //                   {formatToIDR(1000000)} //                 <Typography variant="h4" fontWeight={600}> //               <Grid xs={12}> //               </Grid> //                 </Typography> //                   </Link> //                     Selengkapnya //                   > //                     }} //                       padding: "auto 0px", //                       color: "blue", //                       fontSize: "14px", //                       textDecoration: "underline", //                     style={{ //                     href={"/wallet"} //                   <Link //                 <Grid item xs={4} sx={{ px: 0 }} textAlign="right"> //                 </Grid> //                   </Typography> //                     Saldo Tersedia //                   <Typography variant="h6" fontWeight={600}> //                   /> //                     sx={{ color: "#1E62EB", fontSize: 35 }} //                   <AccountBalanceWalletOutlinedIcon //                 > //                   gap={2} //                   alignItems="center" //                   display="flex" //                   xs={8} //                   item //                 <Grid //               > //                 alignItems="center" //                 display="flex" //                 spacing={4} //                 container //               <Grid //             <Grid display="flex" flexDirection="column" gap={3}> //           <CardContent> //         > //           }} //             maxHeight: "300px", //             minHeight: "200px", //             borderRadius: "16px", //             boxShadow: "0px 4px 7px grey", //             mb: 4, //           sx={{ //         <Card //       <Grid> //     <Grid width="48%"> //   <div className="w-full flex justify-between"> // <div className="w-full flex flex-col gap-10">
-  //                   </Typography>
-  //                 </Grid>
-  //               </Grid>
-  //             </Grid>
+  return isDesktop ? (
+    <div className="w-full p-8 flex flex-col gap-8 font-poppins">
+      {/* Top Section */}
+      <div className="flex justify-between items-start gap-8">
+        {/* Left Column - Welcome & Stats */}
+        <div className="w-2/3 flex flex-col gap-6">
+          {/* Welcome Header */}
+          <div className="flex justify-between items-center bg-[#202226] p-6 rounded-[32px]">
+            <div className="flex flex-col text-white gap-1">
+              {!isLoading ? (
+                <>
+                  <h6 className="text-sm">Have a good day! 👋</h6>
+                  <h1 className="font-semibold text-xl">
+                    Hi, {auth.auth.user?.fullName}
+                  </h1>
+                </>
+              ) : (
+                <>
+                  <Skeleton
+                    variant="text"
+                    sx={{ fontSize: "14px", bgcolor: "#d1d5db" }}
+                    width={140}
+                  />
+                  <Skeleton
+                    variant="text"
+                    sx={{ fontSize: "20px", bgcolor: "#d1d5db" }}
+                    width={180}
+                  />
+                </>
+              )}
+            </div>
+            <div>
+              {!isLoading ? (
+                <Link href="/notifikasi">
+                  <NotificationsNoneOutlinedIcon
+                    sx={{ color: "#ffffff", fontSize: "32px" }}
+                  />
+                </Link>
+              ) : (
+                <Skeleton
+                  variant="circular"
+                  width={32}
+                  height={32}
+                  sx={{ bgcolor: "#d1d5db" }}
+                />
+              )}
+            </div>
+          </div>
 
-  //             <Grid display="flex" alignItems="center" mt={2} gap={2}>
-  //               <PersonOutlineOutlinedIcon
-  //                 sx={{ color: "#f29650", fontSize: 30 }}
-  //               />
-  //               <Grid container spacing={4}>
-  //                 <Grid item xs={8} display="flex" flexDirection="column">
-  //                   <Typography variant="body1" fontWeight={700} p={0}>
-  //                     Profil diperbarui
-  //                   </Typography>
-  //                   <Typography variant="body2" fontWeight={500} p={0}>
-  //                     2 hari yang lalu
-  //                   </Typography>
-  //                 </Grid>
-  //               </Grid>
-  //             </Grid>
+          {/* Stats Cards */}
+          <div className="grid grid-cols-2 gap-6">
+            {/* Balance Card */}
+            {!isLoading ? (
+              <div className="bg-[#3640F0] rounded-2xl p-6 flex flex-col justify-between h-[200px]">
+                <div className="flex gap-3 items-center">
+                  <div className="bg-white p-2 rounded-lg">
+                    <WalletSVG />
+                  </div>
+                  <div className="text-white font-montserrat font-bold">
+                    <h1 className="text-2xl">Saldo</h1>
+                    <h1 className="text-2xl">Anda</h1>
+                  </div>
+                </div>
+                <h1 className="font-extrabold text-2xl text-white">
+                  {formatToIDR(wallet?.balance ?? 0)}
+                </h1>
+              </div>
+            ) : (
+              <Skeleton
+                variant="rounded"
+                height={200}
+                sx={{ bgcolor: "#d1d5db", borderRadius: "16px" }}
+              />
+            )}
 
-  //             <Grid display="flex" alignItems="center" mt={2} gap={2}>
-  //               <HomeOutlinedIcon sx={{ color: "#83288f", fontSize: 30 }} />
-  //               <Grid container spacing={4}>
-  //                 <Grid item xs={8} display="flex" flexDirection="column">
-  //                   <Typography variant="body1" fontWeight={700} p={0}>
-  //                     Login terbaru
-  //                   </Typography>
-  //                   <Typography variant="body2" fontWeight={500} p={0}>
-  //                     1 menit yang lalu
-  //                   </Typography>
-  //                 </Grid>
-  //               </Grid>
-  //             </Grid>
-  //           </CardContent>
-  //         </Card>
-  //       </Grid>
-  //     </Grid>
-  //     <Grid width="50%">
-  //       <Card
-  //         sx={{
-  //           mb: 4,
-  //           boxShadow: "0px 4px 5px grey",
-  //           borderRadius: "16px",
-  //           minHeight: "545px",
-  //         }}
-  //       >
-  //         <CardContent>
-  //           <Grid display="flex" flexDirection="column" gap={1}>
-  //             <Grid container spacing={4}>
-  //               <Grid item xs={8}>
-  //                 <Typography variant="h6" fontWeight={600}>
-  //                   Statistik Penggunaan Air
-  //                 </Typography>
-  //               </Grid>
-  //             </Grid>
-  //             <LineChart
-  //               sx={{ p: 0, m: 0 }}
-  //               xAxis={[{ data: [1, 2, 3, 5, 8, 10] }]}
-  //               series={[
-  //                 {
-  //                   data: [2, 5.5, 2, 8.5, 1.5, 5],
-  //                 },
-  //               ]}
-  //               width={720}
-  //               height={450}
-  //             />
-  //           </Grid>
-  //         </CardContent>
-  //       </Card>
-  //     </Grid>
-  //   </div>
-  //   <div className=" w-full">
-  //     <Typography variant="h6" fontWeight={600}>
-  //       Kredit Air Terdekat
-  //     </Typography>
-  //     <Grid
-  //       container
-  //       display="flex"
-  //       justifyContent="space-between"
-  //       width="100%"
-  //       mt={4}
-  //     >
-  //       {waterCredits.map((waterCredit: any, i: number) => {
-  //         return (
-  //           <Grid lg={5.6} key={i}>
-  //             <WaterCredit />
-  //           </Grid>
-  //         );
-  //       })}
-  //     </Grid>
-  //   </div>
-  // </div>
-  null : (
+            {/* Token Card */}
+            {!isLoading ? (
+              <div className="bg-[#7D83EF] rounded-2xl p-6 flex flex-col justify-between h-[200px]">
+                <div className="flex gap-3 items-center">
+                  <div className="bg-white p-2 rounded-full">
+                    <TokenSVG />
+                  </div>
+                  <div className="text-white font-montserrat font-bold">
+                    <h1 className="text-xl">Jumlah</h1>
+                    <h1 className="text-2xl">Token</h1>
+                  </div>
+                </div>
+                <h1 className="font-extrabold font-montserrat text-white text-3xl">
+                  {wallet?.conservationToken ?? 0}
+                </h1>
+              </div>
+            ) : (
+              <Skeleton
+                variant="rounded"
+                height={200}
+                sx={{ bgcolor: "#d1d5db", borderRadius: "16px" }}
+              />
+            )}
+          </div>
+
+          {/* Action Buttons */}
+          <div className="grid grid-cols-3 gap-6">
+            {!isLoading ? (
+              <>
+                <div className="bg-[#414BF1] rounded-2xl p-6 flex flex-col items-center gap-4">
+                  <div className="bg-white p-3 rounded-2xl border-2 border-[#A4B0CC]">
+                    <TopUpSVG />
+                  </div>
+                  <h1 className="font-montserrat font-bold text-white">
+                    Top Up
+                  </h1>
+                </div>
+                <div className="bg-[#414BF1] rounded-2xl p-6 flex flex-col items-center gap-4">
+                  <div className="bg-white p-3 rounded-2xl border-2 border-[#A4B0CC]">
+                    <ClaimTokenSVG size={47} />
+                  </div>
+                  <h1 className="font-montserrat font-bold text-white">
+                    Klaim Token
+                  </h1>
+                </div>
+                <div className="bg-[#414BF1] rounded-2xl p-6 flex flex-col items-center gap-4">
+                  <div className="bg-white p-3 rounded-2xl border-2 border-[#A4B0CC]">
+                    <ConvertTokenSVG size={47} />
+                  </div>
+                  <h1 className="font-montserrat font-bold text-white">
+                    Tukar Token
+                  </h1>
+                </div>
+              </>
+            ) : (
+              <>
+                <Skeleton
+                  variant="rounded"
+                  height={160}
+                  sx={{ bgcolor: "#d1d5db", borderRadius: "16px" }}
+                />
+                <Skeleton
+                  variant="rounded"
+                  height={160}
+                  sx={{ bgcolor: "#d1d5db", borderRadius: "16px" }}
+                />
+                <Skeleton
+                  variant="rounded"
+                  height={160}
+                  sx={{ bgcolor: "#d1d5db", borderRadius: "16px" }}
+                />
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Right Column - Water Usage */}
+        <div className="w-1/3 bg-[#202226] rounded-[26px] p-6 flex flex-col gap-6">
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              {!isLoading ? (
+                <>
+                  <OpacityIcon sx={{ color: "#93B6E8" }} />
+                  <h1 className="font-montserrat font-bold text-2xl text-white">
+                    Penggunaan Air
+                  </h1>
+                </>
+              ) : (
+                <Skeleton
+                  variant="text"
+                  sx={{ fontSize: "24px", bgcolor: "#d1d5db" }}
+                  width={200}
+                />
+              )}
+            </div>
+            <div className="flex items-end gap-2">
+              {!isLoading ? (
+                <>
+                  <h1 className="font-montserrat font-extrabold text-4xl text-white">
+                    1480
+                  </h1>
+                  <h6 className="font-inter text-[#8C8C8C] text-lg mb-2">
+                    Liter
+                  </h6>
+                </>
+              ) : (
+                <Skeleton
+                  variant="text"
+                  sx={{ fontSize: "36px", bgcolor: "#d1d5db" }}
+                  width={150}
+                />
+              )}
+            </div>
+          </div>
+
+          {!isLoading ? (
+            <div className="h-[300px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={data}>
+                  <defs>
+                    <linearGradient id="gradient" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stopColor="#2983FF" stopOpacity={1} />
+                      <stop offset="100%" stopColor="#6FC3FF" stopOpacity={1} />
+                    </linearGradient>
+                  </defs>
+                  <Line
+                    type="monotone"
+                    dataKey="penggunaan"
+                    stroke="url(#gradient)"
+                    strokeWidth={2}
+                  />
+                  <Tooltip labelFormatter={formatLabel} />
+                  <XAxis dataKey="name" tick={{ fontSize: 12 }} />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          ) : (
+            <Skeleton
+              variant="rounded"
+              height={300}
+              sx={{ bgcolor: "#d1d5db" }}
+            />
+          )}
+        </div>
+      </div>
+
+      {/* Bottom Section - Calendar & Activities */}
+      {!isLoading ? (
+        <div className="bg-[#3568AD] rounded-[26px] p-6">
+          <div className="flex justify-between items-start gap-8">
+            {/* Calendar */}
+            <div className="w-1/2">
+              <div className="flex items-center gap-2 mb-6">
+                <CalendarMonthIcon sx={{ color: "white" }} />
+                <h1 className="font-medium text-xl text-white">
+                  Kalender Aktivitas
+                </h1>
+              </div>
+
+              <div className="bg-[#444444] p-4 rounded-3xl">
+                <div className="flex items-center justify-between mb-6">
+                  <button
+                    onClick={() => changeMonth(-1)}
+                    className="text-white"
+                  >
+                    <ChevronLeft size={24} />
+                  </button>
+                  <h2 className="text-white text-xl font-semibold">
+                    {formatDate(currentDate)}
+                  </h2>
+                  <button onClick={() => changeMonth(1)} className="text-white">
+                    <ChevronRight size={24} />
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-7 gap-4">
+                  {["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"].map(
+                    (day) => (
+                      <div
+                        key={day}
+                        className="text-center text-white text-sm py-2"
+                      >
+                        {day}
+                      </div>
+                    )
+                  )}
+
+                  {getDaysArray().map((day, index) => (
+                    <div
+                      key={index}
+                      className={`aspect-square rounded-lg ${
+                        day === null
+                          ? "bg-transparent"
+                          : "bg-[#373737] hover:bg-gray-700 cursor-pointer"
+                      }`}
+                    >
+                      {day && (
+                        <button
+                          onClick={() =>
+                            setSelectedDate(
+                              new Date(
+                                currentDate.getFullYear(),
+                                currentDate.getMonth(),
+                                day
+                              )
+                            )
+                          }
+                          className={`w-full h-full flex flex-col items-center justify-center rounded-lg ${
+                            isToday(day)
+                              ? "bg-[#cccfce] text-black"
+                              : isSelected(day)
+                              ? "bg-white text-black"
+                              : "text-white"
+                          }`}
+                        >
+                          <span className="text-xs text-[#8C8C8C]">
+                            {getMonthShort(currentDate.getMonth())}
+                          </span>
+                          <span className="text-sm">{day}</span>
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Activities */}
+            <div className="w-1/2">
+              <div className="flex items-center justify-between mb-6">
+                <h1 className="font-medium text-xl text-white">
+                  Aktivitas Terakhir
+                </h1>
+                <div className="flex gap-4">
+                  <TextField
+                    id="search"
+                    label="Search"
+                    value={seacrh}
+                    onChange={(e) => setSearch(e.target.value)}
+                    sx={{
+                      bgcolor: "#373731",
+                      "& .MuiOutlinedInput-root": {
+                        color: "white",
+                        "& fieldset": { borderColor: "transparent" },
+                        "&:hover fieldset": { borderColor: "transparent" },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "transparent",
+                        },
+                      },
+                      "& .MuiInputLabel-root": {
+                        color: "#8C8C8C",
+                        "&.Mui-focused": { color: "white" },
+                      },
+                    }}
+                  />
+                  <button className="p-3 rounded-xl bg-[#373731]">
+                    <TuneIcon sx={{ color: "#8C8C8C" }} />
+                  </button>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                {activity.map((data: any, i: number) => (
+                  <ActivityCard activity={data} key={i} />
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <Skeleton
+          variant="rounded"
+          height={600}
+          sx={{ bgcolor: "#d1d5db", borderRadius: "26px" }}
+        />
+      )}
+    </div>
+  ) : (
     <div className="w-full flex flex-col justify-center items-center gap-5 font-poppins">
       <div className="w-full flex flex-col pt-12 pb-6 px-4 bg-[#202226] rounded-[32px] relative overflow-hidden gap-7 z-0">
         <div className=" absolute z-[-10] top-0 -left-12">
@@ -594,7 +852,7 @@ const HomePage: React.FC = () => {
         </div>
       </div>
 
-      {/* <div className="w-full flex justify-between items-center">
+      <div className="w-full flex justify-between items-center">
         {!isLoading ? (
           <div className=" w-[49%] h-[120px] rounded-[15px] bg-gradient-to-r from-white via-[#3640F0] to-white pt-[2px]">
             <div className=" w-full h-full rounded-[15px] bg-white shadow-[0px_6px_21px_#838585]"></div>
@@ -621,7 +879,7 @@ const HomePage: React.FC = () => {
             sx={{ bgcolor: "#d1d5db", borderRadius: "15px" }}
           />
         )}
-      </div> */}
+      </div>
 
       <div className=" w-full h-[251px] rounded-[26px] bg-[#202226] relative z-0 overflow-hidden p-5 flex flex-col justify-between">
         {/* absolute */}
