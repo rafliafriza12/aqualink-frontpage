@@ -11,4 +11,5 @@ export interface UserLayoutProps {
 
 export interface SVGIconProps {
   size?: number;
+  color?: string;
 }
