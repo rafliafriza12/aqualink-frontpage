@@ -20,14 +20,14 @@ const UserLayout: React.FC<UserLayoutProps> = ({ children }) => {
   useEffect(() => {
     auth.isAuthenticated
       ? navigation.replace("/")
-      : navigation.replace("/auth/login");
+      : navigation.replace("/auth");
   }, [auth.isAuthenticated]);
 
   return auth.isAuthenticated ? (
     <>
       <CssBaseline />
-      <Container maxWidth="xl" sx={{ py: isDesktop ? 15 : 0 }}>
-        {!isDesktop && (
+      <Container maxWidth="xl" sx={{ py: isDesktop ? 15 : 2.3 }}>
+        {/* {!isDesktop && (
           <CardHeader
             sx={{ pl: 0, py: 4 }}
             title={
@@ -44,7 +44,7 @@ const UserLayout: React.FC<UserLayoutProps> = ({ children }) => {
               />
             }
           />
-        )}
+        )} */}
         {children}
         <Navbar />
       </Container>

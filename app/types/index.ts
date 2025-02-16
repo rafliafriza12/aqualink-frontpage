@@ -8,3 +8,8 @@ export interface AuthLayoutProps {
 export interface UserLayoutProps {
   children: React.ReactNode;
 }
+
+export interface SVGIconProps {
+  size?: number;
+  color?: string;
+}

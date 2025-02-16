@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/hooks/UseAuth";
 import { Grid, Typography } from "@mui/material";
 import Logo from "@/app/components/logo/Logo";
+import Google from "@/app/components/logo/Google";
 import { useState } from "react";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -11,7 +12,9 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { useEffect } from "react";
 import Link from "next/link";
+import Aos from "aos";
 import { IsDesktop } from "@/app/hooks";
+import API from "@/app/utils/API";
 
 const Login: React.FC = () => {
   const navigation = useRouter();
@@ -23,167 +26,190 @@ const Login: React.FC = () => {
   const isDesktop = IsDesktop();
 
   const onLogin = () => {
-    setIsLoading(!isLoading);
-    const data: any = {
-      user: {
-        id: "123456",
-        name: "Rafli Afriza Nugraha",
-        email: "rafli@gmail.com",
-      },
-      token: "Bearer alkjbdyaewbr98y4rqalisudgv9q4bf",
-    };
-    Auth.login(data);
+    setIsLoading(true);
+    API.post("/users/login", {
+      email: email,
+      password: password,
+    })
+      .then((res) => {
+        setIsLoading(false);
+        const data: any = {
+          user: {
+            id: res.data.data._id,
+            fullName: res.data.data.fullName,
+            phone: res.data.data.phone,
+            email: res.data.data.email,
+          },
+          token: `Bearer ${res.data.data.token}`,
+        };
+        // console.log(data);
+        Auth.login(data);
+      })
+      .catch((err) => {
+        setIsLoading(false);
+        console.log("error", err);
+      });
   };
 
   useEffect(() => {
-    if (!Auth.auth.isAuthenticated) {
-      navigation.replace("/auth/login");
+    // Aos.init();
+    // Aos.refresh();
+    if (Auth.auth.isAuthenticated) {
+      navigation.replace("/");
     }
   }, [Auth.auth.isAuthenticated, navigation]);
 
   if (Auth.auth.isAuthenticated) {
-    return null; // Hindari rendering konten saat redirect
+    navigation.replace("/");
+    return null;
   }
 
-  return (
-    <div
-      className={`${
-        isDesktop ? "gap-[50px]" : ""
-      } h-screen w-screen overflow-hidden flex justify-center items-center`}
-    >
-      <Grid
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        width="100%"
-        overflow="hidden"
-      >
-        <div
-          className={`${
-            isDesktop ? "" : "h-[40vh]"
-          }  w-full flex justify-center items-center`}
+  return isDesktop ? null : (
+    <div className="w-screen h-screen flex flex-col justify-center items-center p-7 gap-10 font-poppins">
+      <div data-aos={"fade-up"} data-aos-duration={"1000"} className="">
+        <Logo size={110} withText={true} />
+      </div>
+
+      <div className="flex flex-col gap-2 items-center">
+        <h1
+          data-aos={"fade-up"}
+          data-aos-duration={"1000"}
+          className=" text-[#202226] font-semibold text-2xl"
         >
-          <Logo />
-        </div>
-        <div
-          className={`${
-            isDesktop
-              ? " mt-4 w-[50%] rounded-xl px-[10%]"
-              : "h-[60vh] w-full rounded-t-3xl"
-          }  bg-[#3D6DCC]  flex flex-col items-center p-6 gap-14 overflow-hidden`}
+          Please login to continue
+        </h1>
+        <h6 className=" text-center text-[#838383] text-sm">
+          Welcome back! Please enter your details.
+        </h6>
+      </div>
+      <div className=" w-full flex flex-col gap-5 items-center">
+        <TextField
+          id="email"
+          label="Email"
+          variant="outlined"
+          value={email}
+          type="email"
+          onChange={(e) => setEmail(e.target.value)}
+          sx={{
+            width: "100%",
+            "& .MuiOutlinedInput-root": {
+              color: "black", // Warna teks input
+              "& fieldset": {
+                borderColor: "#EDEDED", // Warna outline default
+              },
+              "&:hover fieldset": {
+                borderColor: "#EDEDED", // Warna outline saat hover
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "#EDEDED", // Warna outline saat fokus
+              },
+            },
+            "& .MuiInputLabel-root": {
+              color: "black", // Warna label default
+              "&.Mui-focused": {
+                color: "black", // Warna label saat fokus
+              },
+            },
+          }}
+        />
+        <TextField
+          id="password"
+          label="Password"
+          type={showPassword ? "text" : "password"} // Toggle tipe input
+          variant="outlined"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          sx={{
+            width: "100%",
+            "& .MuiOutlinedInput-root": {
+              color: "black", // Warna teks input
+              "& fieldset": {
+                borderColor: "#EDEDED", // Warna outline default
+              },
+              "&:hover fieldset": {
+                borderColor: "#EDEDED", // Warna outline saat hover
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "#EDEDED", // Warna outline saat fokus
+              },
+            },
+            "& .MuiInputLabel-root": {
+              color: "black", // Warna label default
+              "&.Mui-focused": {
+                color: "black", // Warna label saat fokus
+              },
+            },
+          }}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  onClick={() => setShowPassword(!showPassword)}
+                  edge="end"
+                  style={{ color: "gray" }}
+                >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
+        {/* <button
+          onClick={() => onLogin()}
+          className="w-full bg-[#039FE1] text-center text-white font-semibold text-base rounded-xl py-3"
         >
-          <Typography variant="h4" fontWeight={600} sx={{ color: "white" }}>
-            Masuk
-          </Typography>
-          <Grid
-            width="100%"
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            gap={4}
-          >
-            <TextField
-              id="email"
-              label="Email"
-              variant="outlined"
-              value={email}
-              type="email"
-              onChange={(e) => setEmail(e.target.value)}
-              sx={{
-                width: "100%",
-                "& .MuiOutlinedInput-root": {
-                  color: "white", // Warna teks input
-                  "& fieldset": {
-                    borderColor: "white", // Warna outline default
-                  },
-                  "&:hover fieldset": {
-                    borderColor: "white", // Warna outline saat hover
-                  },
-                  "&.Mui-focused fieldset": {
-                    borderColor: "white", // Warna outline saat fokus
-                  },
-                },
-                "& .MuiInputLabel-root": {
-                  color: "white", // Warna label default
-                  "&.Mui-focused": {
-                    color: "white", // Warna label saat fokus
-                  },
-                },
-              }}
-            />
-            <TextField
-              id="password"
-              label="Password"
-              type={showPassword ? "text" : "password"} // Toggle tipe input
-              variant="outlined"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              sx={{
-                width: "100%",
-                "& .MuiOutlinedInput-root": {
-                  color: "white",
-                  "& fieldset": {
-                    borderColor: "white",
-                  },
-                  "&:hover fieldset": {
-                    borderColor: "white",
-                  },
-                  "&.Mui-focused fieldset": {
-                    borderColor: "white",
-                  },
-                },
-                "& .MuiInputLabel-root": {
-                  color: "white",
-                  "&.Mui-focused": {
-                    color: "white",
-                  },
-                },
-              }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={() => setShowPassword(!showPassword)}
-                      edge="end"
-                      style={{ color: "white" }}
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </Grid>
-          <LoadingButton
-            loading={isLoading}
-            variant="outlined"
-            onClick={() => onLogin()}
-            sx={{
-              backgroundColor: "white",
-              width: "100%",
-              color: "#000000",
-              borderColor: "white",
-              "&:hover": {
-                backgroundColor: "#f0f0f0", // Warna saat hover
-                borderColor: "#f0f0f0",
-              },
-              "& .MuiLoadingButton-loadingIndicator": {
-                color: "#001740", // Warna indikator loading
-              },
-            }}
-          >
-            <Typography variant="body1" fontWeight={700}>
-              Lanjut
-            </Typography>
-          </LoadingButton>
-          <Typography variant="body2" fontWeight={500} sx={{ color: "white" }}>
-            Belum memiliki akun ?{" "}
-            <Link href={"/auth/register"} className=" underline">
-              Daftar
-            </Link>
-          </Typography>
+          Sign in
+        </button> */}
+        <LoadingButton
+          loading={isLoading}
+          variant="outlined"
+          onClick={() => onLogin()}
+          sx={{
+            backgroundColor: "#039FE1",
+            width: "100%",
+            height: "48px",
+            color: "#ffffff",
+            borderColor: "#039FE1",
+            "&:hover": {
+              backgroundColor: "#039FE1", // Warna saat hover
+              borderColor: "#039FE1",
+            },
+            "& .MuiLoadingButton-loadingIndicator": {
+              color: "#ffffff", // Warna indikator loading
+            },
+          }}
+        >
+          {!isLoading ? (
+            <h1 className="text-white font-semibold text-base">Sign in</h1>
+          ) : null}
+        </LoadingButton>
+        <div className="inline-flex items-center justify-center w-full">
+          <hr className="w-full h-px my-5 bg-[#D9D9D9] border-0" />
+          <span className="absolute px-3 text-[#838383] -translate-x-1/2 bg-white left-1/2 font-inter">
+            Or
+          </span>
         </div>
-      </Grid>
+        <Link
+          href={"#"}
+          className="w-full bg-white flex justify-center items-center text-[#4999F1] font-semibold text-base rounded-xl py-2 border-[2px] border-[#EDEDED] gap-1"
+        >
+          <div className=" w-8 h-8">
+            <Google />
+          </div>
+          <h1 className=" font-semibold text-[#1E1E1E] text-base">
+            Continue with Google
+          </h1>
+        </Link>
+        <h1 className="text-[#838383]">
+          Dont’t have an account ?{" "}
+          <Link
+            className="text-[#202226] font-semibold"
+            href={"/auth/register"}
+          >
+            Sign up
+          </Link>
+        </h1>
+      </div>
     </div>
   );
 };

@@ -1,11 +1,17 @@
 "use client";
-import { Grid, Typography, Card, CardContent } from "@mui/material";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
 import { useAuth } from "@/app/hooks/UseAuth";
 import Link from "next/link";
 import { IsDesktop } from "@/app/hooks";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import WaterCredit from "@/app/components/card/WaterCredit";
+import HeaderMobile from "@/app/components/headers/HeaderMobile";
+import { CustomCSSProperties } from "@/app/types/CustomCssProperties";
+import { Pagination } from "swiper/modules";
+import "swiper/css/pagination";
+
 const Marketplace: React.FC = () => {
   const navigation = useRouter();
   const auth = useAuth();
@@ -13,7 +19,7 @@ const Marketplace: React.FC = () => {
 
   useEffect(() => {
     if (!auth.auth.isAuthenticated) {
-      navigation.replace("/auth/login");
+      navigation.replace("/auth");
     }
   }, [auth.auth.isAuthenticated, navigation]);
 
@@ -46,60 +52,51 @@ const Marketplace: React.FC = () => {
       field: "1",
     },
   ];
-  return (
-    <div className=" w-full flex flex-col items-center gap-10 pb-10">
-      <Grid
-        sx={{ width: "100%" }}
-        display="flex"
-        justifyContent="space-between"
-        alignContent="center"
-      >
-        <Grid>
-          <Typography
-            variant={isDesktop ? "h6" : "body1"}
-            fontWeight={600}
-            fontSize={isDesktop ? 20 : 14}
-          >
-            Marketplace Kredit Air
-          </Typography>
-          <Typography
-            variant={isDesktop ? "body1" : "body2"}
-            fontWeight={500}
-            fontSize={isDesktop ? 16 : 12}
-          >
-            {auth.auth.user?.name} (ID : {auth?.auth?.user?.id ?? "1111111111"})
-          </Typography>
-        </Grid>
-        <Link
-          href={"/tagihan"}
-          className="flex justify-center items-center bg-[#001740] px-2 text-white rounded-md"
-        >
-          <Typography
-            variant="caption"
-            fontWeight={600}
-            fontSize={isDesktop ? 14 : 12}
-          >
-            Tagihan Kredit Air
-          </Typography>
-        </Link>
-      </Grid>
 
-      <Grid
-        sx={{ width: "100%" }}
-        display="flex"
-        flexDirection="column"
-        gap={4}
-      >
-        <Grid container rowGap={4} columnGap={12} mt={4}>
+  const swiperStyleMarketPlace: CustomCSSProperties = {
+    "--swiper-pagination-color": "#5961FF",
+    "--swiper-pagination-bullet-inactive-color": "#999999",
+    "--swiper-pagination-bullet-inactive-opacity": "1",
+    "--swiper-pagination-bullet-horizontal-gap": "6px",
+  };
+
+  return isDesktop ? null : (
+    <div className="w-full flex flex-col justify-center items-center gap-5 font-poppins">
+      <HeaderMobile mode="dark" />
+      <div className=" w-full h-[190px] bg-[#171717] rounded-[18px] relative z-0">
+        <div className=" absolute bg-white z-[1] pt-2 pl-2 rounded-tl-[18px] w-[168px] h-[57px] -bottom-0 -right-0">
+          <div className=" w-full h-full bg-[#5961FF] rounded-[18px]"></div>
+        </div>
+      </div>
+
+      <div className="w-screen mt-4">
+        <Swiper
+          className="w-full flex justify-center"
+          spaceBetween={0}
+          pagination={{ clickable: true }}
+          modules={[Pagination]}
+          style={swiperStyleMarketPlace}
+          slidesPerView={1}
+          onSlideChange={() => console.log("slide change")}
+          onSwiper={(swiper) => console.log(swiper)}
+        >
           {waterCredits.map((waterCredit: any, i: number) => {
             return (
-              <Grid lg={5.6} key={i}>
-                <WaterCredit />
-              </Grid>
+              <SwiperSlide key={i} className=" mb-8">
+                <div className=" w-screen flex justify-center">
+                  <WaterCredit isInSwiper={true} />
+                </div>
+              </SwiperSlide>
             );
           })}
-        </Grid>
-      </Grid>
+        </Swiper>
+      </div>
+
+      <div className="w-full h-[96px] bg-[#121212] rounded-xl mb-4"></div>
+
+      {waterCredits.map((waterCredit: any, i: number) => {
+        return <WaterCredit />;
+      })}
     </div>
   );
 };

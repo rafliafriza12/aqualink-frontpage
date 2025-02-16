@@ -56,6 +56,7 @@ const Marketplace: React.FC = () => {
         alignContent="center"
       >
         <Grid>
+          {" "}
           <Typography
             variant={isDesktop ? "h6" : "body1"}
             fontWeight={600}
@@ -68,7 +69,7 @@ const Marketplace: React.FC = () => {
             fontWeight={500}
             fontSize={isDesktop ? 16 : 12}
           >
-            {Auth.auth.user?.name} (ID : {Auth?.auth?.user?.id ?? "1111111111"})
+            {/* {Auth.auth.user?.name} (ID : {Auth?.auth?.user?.id ?? "1111111111"}) */}
           </Typography>
         </Grid>
       </Grid>
