@@ -5,10 +5,6 @@ import { useAuth } from "@/app/hooks/UseAuth";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
-import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
-import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
-import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
 import { IsDesktop } from "@/app/hooks";
 import WaterCredit from "@/app/components/card/WaterCredit";
@@ -29,17 +25,9 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import TextField from "@mui/material/TextField";
 import TuneIcon from "@mui/icons-material/Tune";
 import ActivityCard from "@/app/components/card/Activity";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  TooltipProps,
-  ResponsiveContainer,
-} from "recharts";
+import { LineChart, Line, XAxis, Tooltip, ResponsiveContainer } from "recharts";
+import ClaimTokenModal from "@/app/components/modals/ClaimTokenModal";
+import TopUpModal from "@/app/components/modals/TopUpModal";
 
 const HomePage: React.FC = () => {
   const auth = useAuth();
@@ -50,6 +38,9 @@ const HomePage: React.FC = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [seacrh, setSearch] = useState<string>("");
+  const [showClaimTokenModal, setShowClaimTokenModal] =
+    useState<boolean>(false);
+  const [showTopUpModal, setShowTopUpModal] = useState<boolean>(false);
 
   const activity: any = [
     {
@@ -268,7 +259,7 @@ const HomePage: React.FC = () => {
   }
 
   return isDesktop ? (
-    <div className="w-full p-8 flex flex-col gap-8 font-poppins">
+    <div className="w-full p-8 flex flex-col gap-8 font-poppins ">
       {/* Top Section */}
       <div className="flex justify-between items-start gap-8">
         {/* Left Column - Welcome & Stats */}
@@ -620,7 +611,18 @@ const HomePage: React.FC = () => {
       )}
     </div>
   ) : (
-    <div className="w-full flex flex-col justify-center items-center gap-5 font-poppins">
+    <div className="w-full flex flex-col justify-center items-center gap-5 font-poppins relative z-0">
+      {/* Claim Token Modal */}
+      <ClaimTokenModal
+        showClaimTokenModal={showClaimTokenModal}
+        setShowClaimTokenModal={setShowClaimTokenModal}
+      />
+      <TopUpModal
+        setShowTopUpModal={setShowTopUpModal}
+        showTopUpModal={showTopUpModal}
+      />
+      {/* Claim Token Modal */}
+
       <div className="w-full flex flex-col pt-12 pb-6 px-4 bg-[#202226] rounded-[32px] relative overflow-hidden gap-7 z-0">
         <div className=" absolute z-[-10] top-0 -left-12">
           <Ellips />
@@ -767,9 +769,13 @@ const HomePage: React.FC = () => {
           <div className="w-full h-full bg-[#414BF1] rounded-[25px] flex justify-evenly items-center">
             <div className=" flex flex-col items-center gap-1">
               {!isLoading ? (
-                <div className="bg-white p-2 rounded-[15px] border-[2px] border-[#A4B0CC]">
+                <button
+                  disabled={isLoading}
+                  onClick={() => setShowTopUpModal(true)}
+                  className="bg-white p-2 rounded-[15px] border-[2px] border-[#A4B0CC]"
+                >
                   <TopUpSVG />
-                </div>
+                </button>
               ) : (
                 <Skeleton
                   variant="rounded"
@@ -795,9 +801,13 @@ const HomePage: React.FC = () => {
             </div>
             <div className=" flex flex-col items-center gap-1">
               {!isLoading ? (
-                <div className="bg-white p-2 rounded-[15px] border-[2px] border-[#A4B0CC]">
+                <button
+                  disabled={isLoading}
+                  onClick={() => setShowClaimTokenModal(true)}
+                  className="bg-white p-2 rounded-[15px] border-[2px] border-[#A4B0CC]"
+                >
                   <ClaimTokenSVG size={47} />
-                </div>
+                </button>
               ) : (
                 <Skeleton
                   variant="rounded"
