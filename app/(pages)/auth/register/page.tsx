@@ -1,22 +1,24 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/hooks/UseAuth";
-import { Grid, Typography } from "@mui/material";
 import Logo from "@/app/components/logo/Logo";
 import { useState, useEffect } from "react";
-import Button from "@mui/material/Button";
 import Google from "@/app/components/logo/Google";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
-import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import Link from "next/link";
+import API from "@/app/utils/API";
 import { IsDesktop } from "@/app/hooks";
+import { toast, Bounce, ToastContainer } from "react-toastify";
+import LoadingButton from "@mui/lab/LoadingButton";
 const Register: React.FC = () => {
   const isDesktop = IsDesktop();
   const navigation = useRouter();
+  const [fullName, setFullName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
+  const [phone, setPhone] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -25,21 +27,51 @@ const Register: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const Auth = useAuth();
 
-  const onLogin = () => {
+  const onRegister = () => {
     setIsLoading(!isLoading);
-    const data: any = {
-      data: {
-        user: {
-          id: "123456",
-          name: "Rafli Afriza Nugraha",
-          email: "rafli@gmail.com",
-        },
-        token: "Bearer alkjbdyaewbr98y4rqalisudgv9q4bf",
-      },
-    };
-    Auth.login(data);
-
-    navigation.replace("/");
+    API.post("/users", {
+      email: email,
+      phone: phone,
+      fullName: fullName,
+      password: password,
+    })
+      .then((res) => {
+        setFullName("");
+        setEmail("");
+        setPhone("");
+        setPassword("");
+        setConfirmPassword("");
+        setIsLoading(false);
+        console.log(res.data.data);
+        toast.success(`${res.data.message}`, {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
+        setTimeout(() => {
+          navigation.replace("/auth/login");
+        }, 2000);
+      })
+      .catch((err) => {
+        setIsLoading(false);
+        toast.error(`${err.response.data.message}`, {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
+      });
   };
 
   useEffect(() => {
@@ -56,7 +88,7 @@ const Register: React.FC = () => {
   }
 
   return isDesktop ? null : (
-    <div className="w-screen h-screen flex flex-col justify-center items-center p-7 gap-10 font-poppins">
+    <div className="w-screen flex flex-col justify-center items-center p-7 gap-10 font-poppins">
       <div data-aos={"fade-up"} data-aos-duration={"1000"} className="">
         <Logo size={110} withText={true} />
       </div>
@@ -75,12 +107,70 @@ const Register: React.FC = () => {
       </div>
       <div className=" w-full flex flex-col gap-5 items-center">
         <TextField
+          id="fullname"
+          label="Nama Lengkap"
+          variant="outlined"
+          value={fullName}
+          type="text"
+          onChange={(e) => setFullName(e.target.value)}
+          sx={{
+            width: "100%",
+            "& .MuiOutlinedInput-root": {
+              color: "black", // Warna teks input
+              "& fieldset": {
+                borderColor: "#EDEDED", // Warna outline default
+              },
+              "&:hover fieldset": {
+                borderColor: "#EDEDED", // Warna outline saat hover
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "#EDEDED", // Warna outline saat fokus
+              },
+            },
+            "& .MuiInputLabel-root": {
+              color: "black", // Warna label default
+              "&.Mui-focused": {
+                color: "black", // Warna label saat fokus
+              },
+            },
+          }}
+        />
+        <TextField
           id="email"
           label="Email"
           variant="outlined"
           value={email}
           type="email"
           onChange={(e) => setEmail(e.target.value)}
+          sx={{
+            width: "100%",
+            "& .MuiOutlinedInput-root": {
+              color: "black", // Warna teks input
+              "& fieldset": {
+                borderColor: "#EDEDED", // Warna outline default
+              },
+              "&:hover fieldset": {
+                borderColor: "#EDEDED", // Warna outline saat hover
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "#EDEDED", // Warna outline saat fokus
+              },
+            },
+            "& .MuiInputLabel-root": {
+              color: "black", // Warna label default
+              "&.Mui-focused": {
+                color: "black", // Warna label saat fokus
+              },
+            },
+          }}
+        />
+        <TextField
+          id="phone"
+          label="No. HP"
+          variant="outlined"
+          value={phone}
+          type="number"
+          onChange={(e) => setPhone(e.target.value)}
           sx={{
             width: "100%",
             "& .MuiOutlinedInput-root": {
@@ -187,9 +277,29 @@ const Register: React.FC = () => {
             ),
           }}
         />
-        <button className="w-full bg-[#039FE1] text-center text-white font-semibold text-base rounded-xl py-3">
-          Sign up
-        </button>
+        <LoadingButton
+          loading={isLoading}
+          variant="outlined"
+          onClick={() => onRegister()}
+          sx={{
+            backgroundColor: "#039FE1",
+            width: "100%",
+            height: "48px",
+            color: "#ffffff",
+            borderColor: "#039FE1",
+            "&:hover": {
+              backgroundColor: "#039FE1", // Warna saat hover
+              borderColor: "#039FE1",
+            },
+            "& .MuiLoadingButton-loadingIndicator": {
+              color: "#ffffff", // Warna indikator loading
+            },
+          }}
+        >
+          {!isLoading ? (
+            <h1 className="text-white font-semibold text-base">Sign up</h1>
+          ) : null}
+        </LoadingButton>
 
         <div className="inline-flex items-center justify-center w-full">
           <hr className="w-full h-px my-5 bg-[#D9D9D9] border-0" />
@@ -215,6 +325,7 @@ const Register: React.FC = () => {
           </Link>
         </h1>
       </div>
+      <ToastContainer />
     </div>
   );
 };

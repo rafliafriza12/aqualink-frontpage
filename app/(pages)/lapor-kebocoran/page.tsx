@@ -57,7 +57,10 @@ const ChangePassword: React.FC = () => {
             <WomenIllustrator />
           </div>
         </Link>
-        <div className=" w-full h-[122px] rounded-[15px] bg-gradient-to-b from-[#343FFB] via-[#6C72C8] to-[#7A7FC5]/90 relative z-0 overflow-hidden flex items-center justify-end pr-5 shadow-[0px_4px_4px_grey]">
+        <Link
+          href={"/lapor-kebocoran/status-laporan"}
+          className=" w-full h-[122px] rounded-[15px] bg-gradient-to-b from-[#343FFB] via-[#6C72C8] to-[#7A7FC5]/90 relative z-0 overflow-hidden flex items-center justify-end pr-5 shadow-[0px_4px_4px_grey]"
+        >
           <div className=" flex flex-col">
             <div className="flex items-center gap-2 ">
               <h1 className=" font-montserrat font-medium text-white text-[20px]">
@@ -72,7 +75,7 @@ const ChangePassword: React.FC = () => {
           <div className=" absolute z-[-1] -left-2">
             <ReportIllustrator />
           </div>
-        </div>
+        </Link>
       </div>
     </div>
   );
