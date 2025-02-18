@@ -16,7 +16,8 @@ import Link from "next/link";
 import HeaderMobile from "@/app/components/headers/HeaderMobile";
 import { animateScroll as scroll } from "react-scroll";
 import dynamic from "next/dynamic";
-
+import API from "@/app/utils/API";
+import { toast, Bounce, ToastContainer } from "react-toastify";
 // Interfaces
 interface Coordinates {
   lat: number;
@@ -55,11 +56,63 @@ const ReportFormMobile: React.FC = () => {
     }
   };
 
+  const onCreateReport = () => {
+    if (step === 1) {
+      setIsLoading(true);
+      API.post(
+        `/report/create`,
+        {
+          reporterID: auth.auth.user?.id,
+          reporterName: name,
+          problem: problem,
+          address: address,
+          coordinate: {
+            longitude: position?.lng,
+            latitude: position?.lat,
+          },
+        },
+        { headers: { Authorization: auth.auth.token } }
+      )
+        .then((res) => {
+          setIsLoading(false);
+          setStep(step + 1);
+          toast.success(`${res.data.message}`, {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            transition: Bounce,
+          });
+        })
+        .catch((err) => {
+          setIsLoading(false);
+          setStep(step + 1);
+          toast.error(`${err.response.data.message}`, {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            transition: Bounce,
+          });
+        });
+    } else {
+      setStep(step + 1);
+    }
+  };
+
   useEffect(() => {
     if (!auth.auth.isAuthenticated) {
       navigation.replace("/auth/login");
     }
-  }, [auth.auth.isAuthenticated, navigation]);
+  }, [auth.auth.isAuthenticated, navigation, isLoading]);
 
   if (!auth.auth.isAuthenticated) {
     return null;
@@ -200,11 +253,13 @@ const ReportFormMobile: React.FC = () => {
               ></textarea>
               <div className="w-full pl-[2.2%] -mt-[2.6%]">
                 {showMap && (
-                  <MapComponent
-                    position={position}
-                    step={step}
-                    handleMapClick={handleMapClick}
-                  />
+                  <div className=" w-[98%]">
+                    <MapComponent
+                      position={position}
+                      step={step}
+                      handleMapClick={handleMapClick}
+                    />
+                  </div>
                 )}
                 <button
                   onClick={() => setShowMap(!showMap)}
@@ -263,7 +318,7 @@ const ReportFormMobile: React.FC = () => {
                   <button
                     type="submit"
                     disabled={isLoading}
-                    onClick={() => (setStep(step + 1), scrollToTop())}
+                    onClick={() => (scrollToTop(), onCreateReport())}
                     className=" flex items-center gap-1"
                   >
                     {isLoading ? (
@@ -329,6 +384,7 @@ const ReportFormMobile: React.FC = () => {
           </Link>
         </div>
       )}
+      <ToastContainer />
     </div>
   );
 };

@@ -15,6 +15,7 @@ import Link from "next/link";
 import Aos from "aos";
 import { IsDesktop } from "@/app/hooks";
 import API from "@/app/utils/API";
+import { toast, Bounce, ToastContainer } from "react-toastify";
 
 const Login: React.FC = () => {
   const navigation = useRouter();
@@ -44,9 +45,31 @@ const Login: React.FC = () => {
         };
         // console.log(data);
         Auth.login(data);
+        toast.success(`${res.data.message}`, {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
       })
       .catch((err) => {
         setIsLoading(false);
+        toast.error(`${err.response.data.message}`, {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
         console.log("error", err);
       });
   };
@@ -210,6 +233,7 @@ const Login: React.FC = () => {
           </Link>
         </h1>
       </div>
+      <ToastContainer />
     </div>
   );
 };
