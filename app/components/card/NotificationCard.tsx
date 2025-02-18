@@ -27,7 +27,8 @@ const NotificationCard: React.FC<NotificationCardProps> = ({
       </div>
       <div className=" w-full">
         <p className=" text-left text-[#060620]/50 font-inter text-[13px]">
-          {notification?.description}
+          {notification?.description.slice(0, 120)}
+          {notification?.description.length > 120 && ". . . ."}
         </p>
       </div>
     </div>
