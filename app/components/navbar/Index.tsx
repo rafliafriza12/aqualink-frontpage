@@ -1,6 +1,6 @@
 "use client";
 import Box from "@mui/material/Box";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import Paper from "@mui/material/Paper";
 import CssBaseline from "@mui/material/CssBaseline";
 import BottomNavigation from "@mui/material/BottomNavigation";
@@ -33,6 +33,7 @@ import Menu from "@mui/material/Menu";
 import { IsDesktop } from "@/app/hooks";
 import Avatar from "@mui/material/Avatar";
 import { useAuth } from "@/app/hooks/UseAuth";
+import { usePathname, useRouter } from "next/navigation";
 
 interface AppBarProps extends MuiAppBarProps {
   open?: boolean;
@@ -47,6 +48,7 @@ const Navbar = () => {
   const Auth = useAuth();
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [navActivePosition, setNavActivePosition] = useState<string>("home");
   const mainMenu: any = [
     {
       label: "Beranda",
@@ -112,6 +114,8 @@ const Navbar = () => {
     ...theme.mixins.toolbar,
     justifyContent: "flex-end",
   }));
+
+  useEffect(() => {}, [navActivePosition]);
 
   return isDesktop ? (
     <>
@@ -273,40 +277,80 @@ const Navbar = () => {
       >
         <BottomNavigation showLabels sx={{ backgroundColor: "#fffff" }}>
           <BottomNavigationAction
+            onClick={() => setNavActivePosition("home")}
             label="Home"
             icon={
               <Link href={"/"}>
-                <HomeOutlinedIcon sx={{ color: "black" }} />
+                <HomeOutlinedIcon
+                  sx={{
+                    color: navActivePosition === "home" ? "white" : "#202226",
+                  }}
+                />
               </Link>
             }
-            sx={{ color: "black" }}
+            sx={{
+              color: navActivePosition === "home" ? "white" : "#202226",
+              bgcolor: navActivePosition === "home" ? "#202226" : "white",
+            }}
           />
           <BottomNavigationAction
+            onClick={() => setNavActivePosition("marketplace")}
             label="Marketplace"
             icon={
               <Link href={"/marketplace"}>
-                <WaterDropOutlinedIcon sx={{ color: "black" }} />
+                <WaterDropOutlinedIcon
+                  sx={{
+                    color:
+                      navActivePosition === "marketplace" ? "white" : "#202226",
+                  }}
+                />
               </Link>
             }
-            sx={{ color: "black" }}
+            sx={{
+              color: navActivePosition === "marketplace" ? "white" : "#202226",
+              bgcolor:
+                navActivePosition === "marketplace" ? "#202226" : "white",
+            }}
           />
           <BottomNavigationAction
+            onClick={() => setNavActivePosition("lapor-kebocoran")}
             label="Report"
             icon={
               <Link href={"/lapor-kebocoran"}>
-                <EditNoteOutlinedIcon sx={{ color: "black" }} />
+                <EditNoteOutlinedIcon
+                  sx={{
+                    color:
+                      navActivePosition === "lapor-kebocoran"
+                        ? "white"
+                        : "#202226",
+                  }}
+                />
               </Link>
             }
-            sx={{ color: "black" }}
+            sx={{
+              color:
+                navActivePosition === "lapor-kebocoran" ? "white" : "#202226",
+              bgcolor:
+                navActivePosition === "lapor-kebocoran" ? "#202226" : "white",
+            }}
           />
           <BottomNavigationAction
+            onClick={() => setNavActivePosition("profile")}
             label="Profile"
             icon={
               <Link href={"/profile"}>
-                <PersonOutlineOutlinedIcon sx={{ color: "black" }} />
+                <PersonOutlineOutlinedIcon
+                  sx={{
+                    color:
+                      navActivePosition === "profile" ? "white" : "#202226",
+                  }}
+                />
               </Link>
             }
-            sx={{ color: "black" }}
+            sx={{
+              color: navActivePosition === "profile" ? "white" : "#202226",
+              bgcolor: navActivePosition === "profile" ? "#202226" : "white",
+            }}
           />
         </BottomNavigation>
       </Paper>
