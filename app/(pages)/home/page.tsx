@@ -28,6 +28,7 @@ import ActivityCard from "@/app/components/card/Activity";
 import { LineChart, Line, XAxis, Tooltip, ResponsiveContainer } from "recharts";
 import ClaimTokenModal from "@/app/components/modals/ClaimTokenModal";
 import TopUpModal from "@/app/components/modals/TopUpModal";
+import { TrendingUp, TrendingDown } from "lucide-react";
 
 const HomePage: React.FC = () => {
   const auth = useAuth();
@@ -864,8 +865,35 @@ const HomePage: React.FC = () => {
 
       <div className="w-full flex justify-between items-center">
         {!isLoading ? (
-          <div className=" w-[49%] h-[120px] rounded-[15px] bg-gradient-to-r from-white via-[#3640F0] to-white pt-[2px]">
-            <div className=" w-full h-full rounded-[15px] bg-white shadow-[0px_6px_21px_#838585]"></div>
+          <div className=" w-[49%] h-[120px] relative z-0 overflow-hidden shadow-[0px_4px_6px_rgba(0,0,0,0.25)] rounded-3xl">
+            <div className="absolute rounded-3xl transition-all duration-300 overflow-hidden" />
+            <div className="relative h-full w-full flex flex-col justify-center rounded-3xl p-4 shadow-lg backdrop-blur-md overflow-hidden transition-transform duration-300 ">
+              <div className="absolute -right-8 -top-8 w-32 h-32 bg-gradient-to-br from-blue-400 to-violet-500 rounded-full opacity-20 blur-2xl"></div>
+              <div className="flex items-center justify-between mb-4 ">
+                <div className="space-y-1">
+                  <h3 className="text-[10px] font-medium text-gray-400">
+                    Uang Masuk
+                  </h3>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-[12px] text-gray-400">Rp</span>
+                    <span className="text-[14px] font-bold bg-gradient-to-r from-blue-600 to-violet-600 bg-clip-text text-transparent">
+                      1.875.000
+                    </span>
+                  </div>
+                </div>
+                <div className="bg-blue-600 p-2 rounded-2xl shadow-lg">
+                  <TrendingDown className="w-4 h-4 text-white" />
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1 bg-green-100 px-3 py-1 rounded-full">
+                  <span className="text-xs font-medium text-green-600">
+                    +12.5%
+                  </span>
+                </div>
+                <span className="text-xs text-gray-400">bulan ini</span>
+              </div>
+            </div>
           </div>
         ) : (
           <Skeleton
@@ -877,8 +905,35 @@ const HomePage: React.FC = () => {
           />
         )}
         {!isLoading ? (
-          <div className=" w-[49%] h-[120px] rounded-[15px] bg-gradient-to-r from-white via-[#3640F0] to-white pt-[2px]">
-            <div className=" w-full h-full rounded-[15px] bg-white shadow-[0px_6px_21px_#838585]"></div>
+          <div className=" w-[49%] h-[120px] relative z-0 overflow-hidden shadow-[0px_4px_6px_rgba(0,0,0,0.25)] rounded-3xl">
+            <div className="absolute rounded-3xl" />
+            <div className="relative h-full w-full flex flex-col justify-center bg-white/90  rounded-3xl p-4 shadow-lg backdrop-blur-md  overflow-hidden">
+              <div className="absolute -right-8 -top-8 w-32 h-32 bg-gradient-to-br from-rose-400 to-orange-500 rounded-full opacity-20 blur-2xl"></div>
+              <div className="flex items-center justify-between mb-4 ">
+                <div className="space-y-1">
+                  <h3 className="text-[10px] font-medium text-gray-400">
+                    Uang Keluar
+                  </h3>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-[12px] text-gray-400">Rp</span>
+                    <span className="text-[14px] font-bold bg-gradient-to-r from-rose-600 to-orange-600 bg-clip-text text-transparent">
+                      1.875.000
+                    </span>
+                  </div>
+                </div>
+                <div className="bg-gradient-to-br from-rose-500 to-orange-500 p-2 rounded-2xl shadow-lg">
+                  <TrendingUp className="w-4 h-4 text-white" />
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1 bg-green-100 px-3 py-1 rounded-full">
+                  <span className="text-xs font-medium text-green-600">
+                    +12.5%
+                  </span>
+                </div>
+                <span className="text-xs text-gray-400">bulan ini</span>
+              </div>
+            </div>
           </div>
         ) : (
           <Skeleton
