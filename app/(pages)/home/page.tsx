@@ -338,10 +338,17 @@ const HomePage: React.FC = () => {
     }
 
     const initializeData = async () => {
-      await Promise.all([getWallet(), getSubscribed(), getActivity()]);
+      await Promise.all([getWallet(), getSubscribed()]);
     };
-    setInterval(initializeData, 1500);
-    // initializeData();
+
+    // Run getActivity once initially
+    getActivity();
+
+    // Set interval only for wallet and subscription updates
+    const interval = setInterval(initializeData, 1500);
+
+    // Cleanup interval on unmount
+    return () => clearInterval(interval);
   }, [auth.auth.isAuthenticated, navigation, selectedDate]);
 
   if (!auth.auth.isAuthenticated) {
