@@ -29,6 +29,7 @@ import { LineChart, Line, XAxis, Tooltip, ResponsiveContainer } from "recharts";
 import ClaimTokenModal from "@/app/components/modals/ClaimTokenModal";
 import TopUpModal from "@/app/components/modals/TopUpModal";
 import { TrendingUp, TrendingDown } from "lucide-react";
+import { toast, Bounce, ToastContainer } from "react-toastify";
 
 const HomePage: React.FC = () => {
   const auth = useAuth();
@@ -39,105 +40,109 @@ const HomePage: React.FC = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [seacrh, setSearch] = useState<string>("");
+  const [subscribed, setSubscribed] = useState<any>([]);
   const [showClaimTokenModal, setShowClaimTokenModal] =
     useState<boolean>(false);
   const [showTopUpModal, setShowTopUpModal] = useState<boolean>(false);
+  const [activity, setActivity] = useState<any>([]);
 
-  const activity: any = [
-    {
-      id: "678d0eba08ae5e103168934f",
-      name: "Rafli Afriza Nugraha",
-      userId: "677cd8627b6e5be2c217229c",
-      amount: 100000,
-      category: "Pembayaran kredit Air",
-      paymentStatus: "success",
-    },
-    {
-      id: "678d0eba08ae5e103168934f",
-      name: "Rafli Afriza Nugraha",
-      userId: "677cd8627b6e5be2c217229c",
-      amount: 100000,
-      category: "Top Up Saldo",
-      paymentStatus: "pending",
-    },
-    {
-      id: "678d0eba08ae5e103168934f",
-      name: "Rafli Afriza Nugraha",
-      userId: "677cd8627b6e5be2c217229c",
-      amount: 100000,
-      category: "Top Up Saldo",
-      paymentStatus: "reject",
-    },
-    {
-      id: "678d0eba08ae5e103168934f",
-      name: "Rafli Afriza Nugraha",
-      userId: "677cd8627b6e5be2c217229c",
-      amount: 100000,
-      category: "Pembayaran kredit Air",
-      paymentStatus: "success",
-    },
-    {
-      id: "678d0eba08ae5e103168934f",
-      name: "Rafli Afriza Nugraha",
-      userId: "677cd8627b6e5be2c217229c",
-      amount: 100000,
-      category: "Top Up Saldo",
-      paymentStatus: "pending",
-    },
-    {
-      id: "678d0eba08ae5e103168934f",
-      name: "Rafli Afriza Nugraha",
-      userId: "677cd8627b6e5be2c217229c",
-      amount: 100000,
-      category: "Top Up Saldo",
-      paymentStatus: "reject",
-    },
-  ];
+  // const activity: any = [
+  //   {
+  //     id: "678d0eba08ae5e103168934f",
+  //     name: "Rafli Afriza Nugraha",
+  //     userId: "677cd8627b6e5be2c217229c",
+  //     amount: 100000,
+  //     category: "Pembayaran kredit Air",
+  //     paymentStatus: "success",
+  //   },
+  //   {
+  //     id: "678d0eba08ae5e103168934f",
+  //     name: "Rafli Afriza Nugraha",
+  //     userId: "677cd8627b6e5be2c217229c",
+  //     amount: 100000,
+  //     category: "Top Up Saldo",
+  //     paymentStatus: "pending",
+  //   },
+  //   {
+  //     id: "678d0eba08ae5e103168934f",
+  //     name: "Rafli Afriza Nugraha",
+  //     userId: "677cd8627b6e5be2c217229c",
+  //     amount: 100000,
+  //     category: "Top Up Saldo",
+  //     paymentStatus: "reject",
+  //   },
+  //   {
+  //     id: "678d0eba08ae5e103168934f",
+  //     name: "Rafli Afriza Nugraha",
+  //     userId: "677cd8627b6e5be2c217229c",
+  //     amount: 100000,
+  //     category: "Pembayaran kredit Air",
+  //     paymentStatus: "success",
+  //   },
+  //   {
+  //     id: "678d0eba08ae5e103168934f",
+  //     name: "Rafli Afriza Nugraha",
+  //     userId: "677cd8627b6e5be2c217229c",
+  //     amount: 100000,
+  //     category: "Top Up Saldo",
+  //     paymentStatus: "pending",
+  //   },
+  //   {
+  //     id: "678d0eba08ae5e103168934f",
+  //     name: "Rafli Afriza Nugraha",
+  //     userId: "677cd8627b6e5be2c217229c",
+  //     amount: 100000,
+  //     category: "Top Up Saldo",
+  //     paymentStatus: "reject",
+  //   },
+  // ];
 
-  const data: any = [
-    {
-      name: "S",
-      penggunaan: 4000,
-      pv: 2400,
-      amt: 2400,
-    },
-    {
-      name: "Sel",
-      penggunaan: 3000,
-      pv: 1398,
-      amt: 2210,
-    },
-    {
-      name: "Rab",
-      penggunaan: 2000,
-      pv: 9800,
-      amt: 2290,
-    },
-    {
-      name: "Kam",
-      penggunaan: 2780,
-      pv: 3908,
-      amt: 2000,
-    },
-    {
-      name: "Jum",
-      penggunaan: 1890,
-      pv: 4800,
-      amt: 2181,
-    },
-    {
-      name: "Sab",
-      penggunaan: 2390,
-      pv: 3800,
-      amt: 2500,
-    },
-    {
-      name: "Min",
-      penggunaan: 3490,
-      pv: 4300,
-      amt: 2100,
-    },
-  ];
+  // const data: any = [
+  //   {
+  //     name: "S",
+  //     penggunaan: 4000,
+  //     pv: 2400,
+  //     amt: 2400,
+  //   },
+  //   {
+  //     name: "Sel",
+  //     penggunaan: 3000,
+  //     pv: 1398,
+  //     amt: 2210,
+  //   },
+  //   {
+  //     name: "Rab",
+  //     penggunaan: 2000,
+  //     pv: 9800,
+  //     amt: 2290,
+  //   },
+  //   {
+  //     name: "Kam",
+  //     penggunaan: 2780,
+  //     pv: 3908,
+  //     amt: 2000,
+  //   },
+  //   {
+  //     name: "Jum",
+  //     penggunaan: 1890,
+  //     pv: 4800,
+  //     amt: 2181,
+  //   },
+  //   {
+  //     name: "Sab",
+  //     penggunaan: 2390,
+  //     pv: 3800,
+  //     amt: 2500,
+  //   },
+  //   {
+  //     name: "Min",
+  //     penggunaan: 3490,
+  //     pv: 4300,
+  //     amt: 2100,
+  //   },
+  // ];
+
+  const [data, setData] = useState<any>([]);
 
   const formatLabel: any = (label: string) => {
     const dayMap: Record<string, string> = {
@@ -247,13 +252,97 @@ const HomePage: React.FC = () => {
     return monthNames[month];
   };
 
+  const getHistoryWaterUsage = async (waterCreditId: string) => {
+    try {
+      const response = await API.get(
+        `/history/getHistory/${auth.auth.user?.id}/${waterCreditId}?filter=minggu`,
+        {
+          headers: {
+            Authorization: auth.auth.token,
+          },
+        }
+      );
+      setData(response.data.data);
+    } catch (error) {
+      console.error("Error fetching water usage history:", error);
+    }
+  };
+
+  const getSubscribed = async () => {
+    try {
+      const response = await API.get(
+        `/subscribe/getSubscribeByUserId/${auth.auth.user?.id}`,
+        {
+          headers: {
+            Authorization: auth.auth.token,
+          },
+        }
+      );
+      const subscriptions = response.data.data.subscriptions;
+      setSubscribed(subscriptions);
+
+      if (subscriptions?.[0]?.waterCredit?._id) {
+        await getHistoryWaterUsage(subscriptions[0].waterCredit._id);
+      }
+    } catch (error) {
+      console.error("Error fetching subscriptions:", error);
+    }
+  };
+
+  const getActivity = async () => {
+    try {
+      const formattedDate = selectedDate !== null ? selectedDate : currentDate;
+      const response = await API.get(
+        `/notification/getNotificationByUserId/${auth.auth.user?.id}?selectedDate=${formattedDate}`,
+        {
+          headers: {
+            Authorization: auth.auth.token,
+          },
+        }
+      );
+
+      setActivity(response.data.data);
+      if (selectedDate) {
+        toast.success(`${response.data.message}`, {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
+      }
+    } catch (err: any) {
+      toast.error(`${err.response.data.message}`, {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+      console.error("Error fetching activities:", err);
+    }
+  };
+
   useEffect(() => {
     if (!auth.auth.isAuthenticated) {
       navigation.replace("/auth");
+      return;
     }
 
-    getWallet();
-  }, [auth.auth.isAuthenticated, navigation]);
+    const initializeData = async () => {
+      await Promise.all([getWallet(), getSubscribed(), getActivity()]);
+    };
+    setInterval(initializeData, 1500);
+    // initializeData();
+  }, [auth.auth.isAuthenticated, navigation, selectedDate]);
 
   if (!auth.auth.isAuthenticated) {
     return null; // Hindari rendering konten saat redirect
@@ -465,7 +554,7 @@ const HomePage: React.FC = () => {
                     stroke="url(#gradient)"
                     strokeWidth={2}
                   />
-                  <Tooltip labelFormatter={formatLabel} />
+                  <Tooltip labelFormatter={(label) => `Hari: ${label}`} />
                   <XAxis dataKey="name" tick={{ fontSize: 12 }} />
                 </LineChart>
               </ResponsiveContainer>
@@ -988,7 +1077,7 @@ const HomePage: React.FC = () => {
           <div className=" flex items-end gap-1 ml-2">
             {!isLoading ? (
               <h1 className=" font-montserrat font-extrabold text-[35px] text-white">
-                1480
+                {subscribed[0]?.subscriptionDetails?.totalUsedWater?.toFixed(2)}
               </h1>
             ) : (
               <Skeleton
@@ -1022,12 +1111,12 @@ const HomePage: React.FC = () => {
                 </defs>
                 <Line
                   type="monotone"
-                  dataKey="penggunaan"
+                  dataKey="totalUsedWater"
                   stroke="url(#gradient)"
                   strokeWidth={2}
                 />
                 <Tooltip labelFormatter={formatLabel} />
-                <XAxis dataKey="name" tick={{ fontSize: 10 }} />
+                <XAxis dataKey="_id.day" tick={{ fontSize: 10 }} />
               </LineChart>
             </ResponsiveContainer>
           ) : (
@@ -1118,46 +1207,8 @@ const HomePage: React.FC = () => {
             </div>
           </div>
           <div className=" w-full flex flex-col gap-4">
-            <div className=" w-full h-[56px] flex items-center justify-between">
-              <TextField
-                id="search"
-                label="Search"
-                value={seacrh}
-                type="email"
-                onChange={(e) => setSearch(e.target.value)}
-                sx={{
-                  borderRadius: "15px",
-                  bgcolor: "#373731",
-                  width: "80%",
-                  height: "100%",
-                  "& .MuiOutlinedInput-root": {
-                    color: "white", // Warna teks input
-                    "& fieldset": {
-                      borderColor: "transparent", // Warna outline default
-                    },
-                    "&:hover fieldset": {
-                      borderColor: "transparent", // Warna outline saat hover
-                    },
-                    "&.Mui-focused fieldset": {
-                      borderColor: "transparent", // Warna outline saat fokus
-                    },
-                  },
-                  "& .MuiInputLabel-root": {
-                    color: "#8C8C8C", // Warna label default
-                    "&.Mui-focused": {
-                      color: "white", // Warna label saat fokus
-                    },
-                  },
-                }}
-              />
-
-              <button className=" w-[18%] h-full rounded-[15px] flex justify-center items-center bg-[#373731]">
-                <TuneIcon sx={{ color: "#8C8C8C" }} />
-              </button>
-            </div>
-
             {activity.map((data: any, i: number) => {
-              return <ActivityCard activity={data} key={i} />;
+              if (i < 5) return <ActivityCard activity={data} key={i} />;
             })}
           </div>
         </div>
@@ -1173,6 +1224,7 @@ const HomePage: React.FC = () => {
           }}
         />
       )}
+      <ToastContainer />
     </div>
   );
 };
