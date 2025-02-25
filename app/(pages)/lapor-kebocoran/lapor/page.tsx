@@ -17,6 +17,7 @@ import HeaderMobile from "@/app/components/headers/HeaderMobile";
 import { animateScroll as scroll } from "react-scroll";
 import dynamic from "next/dynamic";
 import API from "@/app/utils/API";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import { toast, Bounce, ToastContainer } from "react-toastify";
 // Interfaces
 interface Coordinates {
@@ -42,6 +43,7 @@ const ReportFormMobile: React.FC = () => {
   const auth = useAuth();
   const [position, setPosition] = useState<Coordinates | null>(null);
   const [showMap, setShowMap] = useState<boolean>(false);
+  const [isSuccess, setIsSuccess] = useState<boolean>(false);
 
   const handleMapClick = (coords: Coordinates) => {
     setPosition(coords);
@@ -75,6 +77,7 @@ const ReportFormMobile: React.FC = () => {
       )
         .then((res) => {
           setIsLoading(false);
+          setIsSuccess(true);
           setStep(step + 1);
           toast.success(`${res.data.message}`, {
             position: "top-center",
@@ -90,6 +93,7 @@ const ReportFormMobile: React.FC = () => {
         })
         .catch((err) => {
           setIsLoading(false);
+          setIsSuccess(false);
           setStep(step + 1);
           toast.error(`${err.response.data.message}`, {
             position: "top-center",
@@ -352,7 +356,7 @@ const ReportFormMobile: React.FC = () => {
             </div>
           </div>
         </div>
-      ) : (
+      ) : isSuccess ? (
         <div className=" w-full flex flex-col gap-5 items-center">
           <div className=" w-full h-[435px] bg-gradient-to-b from-[#7A81FC] to-[#3640F0] rounded-[30px] p-2">
             <div className=" w-full h-full rounded-[25px] border-[2px] border-white flex flex-col items-center justify-center gap-6">
@@ -377,6 +381,36 @@ const ReportFormMobile: React.FC = () => {
           >
             <div className=" h-[39px] w-[39px] rounded-full bg-white flex items-center justify-center absolute z-[-1] right-[6px]">
               <ChevronRight sx={{ color: "#375B1A" }} />
+            </div>
+            <h1 className="font-montserrat font-semibold text-sm text-white">
+              Kembali Ke Beranda
+            </h1>
+          </Link>
+        </div>
+      ) : (
+        <div className="w-full flex flex-col gap-5 items-center">
+          <div className="w-full h-[435px] bg-gradient-to-b from-[#FC7A7A] to-[#F03636] rounded-[30px] p-2">
+            <div className="w-full h-full rounded-[25px] border-[2px] border-white flex flex-col items-center justify-center gap-6">
+              <div>
+                <ErrorOutlineIcon sx={{ color: "white", fontSize: 64 }} />
+              </div>
+              <div className="w-full flex flex-col gap-3 items-center">
+                <h1 className="font-montserrat text-white font-bold text-[18px]">
+                  Pelaporan Gagal
+                </h1>
+                <p className="w-[80%] text-center text-white font-montserrat text-xs">
+                  Mohon maaf, laporan anda gagal diproses. Silahkan coba lagi
+                  atau hubungi admin untuk bantuan lebih lanjut.
+                </p>
+              </div>
+            </div>
+          </div>
+          <Link
+            href={"/"}
+            className="w-[85%] h-[48px] rounded-[24px] bg-[#FC7A7A] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] p-2 relative z-0 flex items-center justify-center"
+          >
+            <div className="h-[39px] w-[39px] rounded-full bg-white flex items-center justify-center absolute z-[-1] right-[6px]">
+              <ChevronRight sx={{ color: "#5B1A1A" }} />
             </div>
             <h1 className="font-montserrat font-semibold text-sm text-white">
               Kembali Ke Beranda
