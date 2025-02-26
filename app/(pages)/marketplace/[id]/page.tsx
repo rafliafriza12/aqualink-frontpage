@@ -10,6 +10,8 @@ import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import { formatToIDR } from "@/app/utils/helper";
 import API from "@/app/utils/API";
 import Skeleton from "@mui/material/Skeleton";
+import { toast, Bounce, ToastContainer } from "react-toastify";
+
 const WaterCreditDetail: React.FC = () => {
   const navigation = useRouter();
   const auth = useAuth();
@@ -23,6 +25,38 @@ const WaterCreditDetail: React.FC = () => {
   });
   const [waterCredit, setWaterCredit] = useState<any>({});
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoadingAction, setIsLoadingAction] = useState<boolean>(false);
+  const [showSubscribeModal, setShowSubscribeModal] = useState<boolean>(false);
+  const [showUnsubscribeModal, setShowUnsubscribeModal] =
+    useState<boolean>(false);
+  const [isSubscribed, setIsSubscribed] = useState<boolean>(false);
+  const [subscriptions, setSubscriptions] = useState<any[]>([]);
+
+  const getSubscriptions = async () => {
+    try {
+      const response = await API.get(
+        `/subscribe/getSubscribeByUserId/${auth.auth.user?.id}`,
+        {
+          headers: {
+            Authorization: auth.auth.token,
+          },
+        }
+      );
+      const subs = response.data.data.subscriptions;
+      setSubscriptions(subs);
+
+      // Check if current water credit is in user's subscriptions
+      const isCurrentWaterCreditSubscribed = subs.some(
+        (sub: any) =>
+          sub.waterCredit._id === waterCreditId &&
+          sub.subscriptionDetails.subscribeStatus === true
+      );
+
+      setIsSubscribed(isCurrentWaterCreditSubscribed);
+    } catch (error) {
+      console.error("Error fetching subscriptions:", error);
+    }
+  };
 
   const getWaterCreditById = () => {
     API.get(`/waterCredit/getWaterCreditById/${waterCreditId}`, {
@@ -38,13 +72,123 @@ const WaterCreditDetail: React.FC = () => {
       });
   };
 
+  const handleSubscribe = async () => {
+    try {
+      setIsLoadingAction(true);
+      const response = await API.post(
+        `/subscribe/subscribeWaterCredit`,
+        {
+          customerDetail: {
+            id: auth.auth.user?.id,
+            fullName: auth.auth.user?.fullName,
+            email: auth.auth.user?.email,
+            phone: auth.auth.user?.phone,
+          },
+          waterCreditId: waterCredit._id,
+        },
+        {
+          headers: {
+            Authorization: auth.auth.token,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        setShowSubscribeModal(false);
+        toast.success("Berhasil berlangganan!", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
+        getWaterCreditById();
+        getSubscriptions();
+        setShowSubscribeModal(false);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Gagal berlangganan. Silakan coba lagi.", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+    } finally {
+      setIsLoadingAction(false);
+    }
+  };
+
+  const handleUnsubscribe = async () => {
+    try {
+      setIsLoadingAction(true);
+      const response = await API.put(
+        `/subscribe/unsubscribe/${auth.auth.user?.id}/${waterCredit._id}`,
+        {},
+        {
+          headers: {
+            Authorization: auth.auth.token,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        setShowUnsubscribeModal(false);
+        toast.success("Berhasil berhenti berlangganan!", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
+        getWaterCreditById();
+        getSubscriptions();
+        setShowUnsubscribeModal(false);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Gagal berhenti berlangganan. Silakan coba lagi.", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+    } finally {
+      setIsLoadingAction(false);
+    }
+  };
+
   useEffect(() => {
     if (!auth.auth.isAuthenticated) {
       navigation.replace("/auth");
     }
 
     getWaterCreditById();
-  }, [auth.auth.isAuthenticated, navigation]);
+    getSubscriptions();
+  }, [
+    auth.auth.isAuthenticated,
+    navigation,
+    showSubscribeModal,
+    showUnsubscribeModal,
+  ]);
 
   if (!auth.auth.isAuthenticated) {
     return null; // Hindari rendering konten saat redirect
@@ -221,12 +365,96 @@ const WaterCreditDetail: React.FC = () => {
       </h1>
       <div className=" w-full flex justify-center">
         <button
-          disabled={isLoading}
-          className="py-3 px-8 text-white rounded-[15px] bg-[#484FCA]"
+          disabled={isLoading || isLoadingAction}
+          onClick={() =>
+            isSubscribed
+              ? setShowUnsubscribeModal(true)
+              : setShowSubscribeModal(true)
+          }
+          className={`py-3 px-8 text-white rounded-[15px] ${
+            isSubscribed ? "bg-red-500" : "bg-[#484FCA]"
+          } ${
+            (isLoading || isLoadingAction) && "opacity-50 cursor-not-allowed"
+          }`}
         >
-          <h1 className=" font-montserrat font-bold">Berlangganan Sekarang</h1>
+          <h1 className=" font-montserrat font-bold">
+            {isLoadingAction
+              ? "Loading..."
+              : isSubscribed
+              ? "Berhenti Berlangganan"
+              : "Berlangganan Sekarang"}
+          </h1>
         </button>
       </div>
+
+      {/* Subscribe Modal */}
+      {showSubscribeModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-md">
+            <h2 className="text-xl font-bold mb-4 font-montserrat">
+              Konfirmasi Berlangganan
+            </h2>
+            <p className="text-gray-600 mb-6 font-montserrat">
+              Apakah Anda yakin ingin berlangganan kredit air ini?
+            </p>
+            <div className="flex flex-col gap-3">
+              <button
+                disabled={isLoadingAction}
+                onClick={handleSubscribe}
+                className={`w-full bg-[#484FCA] text-white py-2 rounded-xl font-montserrat font-bold ${
+                  isLoadingAction && "opacity-50 cursor-not-allowed"
+                }`}
+              >
+                {isLoadingAction ? "Loading..." : "Ya, Berlangganan"}
+              </button>
+              <button
+                disabled={isLoadingAction}
+                onClick={() => setShowSubscribeModal(false)}
+                className={`w-full bg-gray-200 text-gray-700 py-2 rounded-xl font-montserrat font-bold ${
+                  isLoadingAction && "opacity-50 cursor-not-allowed"
+                }`}
+              >
+                Batal
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Unsubscribe Modal */}
+      {showUnsubscribeModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-md">
+            <h2 className="text-xl font-bold mb-4 font-montserrat">
+              Konfirmasi Berhenti Berlangganan
+            </h2>
+            <p className="text-gray-600 mb-6 font-montserrat">
+              Apakah Anda yakin ingin berhenti berlangganan kredit air ini?
+            </p>
+            <div className="flex flex-col gap-3">
+              <button
+                disabled={isLoadingAction}
+                onClick={handleUnsubscribe}
+                className={`w-full bg-red-500 text-white py-2 rounded-xl font-montserrat font-bold ${
+                  isLoadingAction && "opacity-50 cursor-not-allowed"
+                }`}
+              >
+                {isLoadingAction ? "Loading..." : "Ya, Berhenti Berlangganan"}
+              </button>
+              <button
+                disabled={isLoadingAction}
+                onClick={() => setShowUnsubscribeModal(false)}
+                className={`w-full bg-gray-200 text-gray-700 py-2 rounded-xl font-montserrat font-bold ${
+                  isLoadingAction && "opacity-50 cursor-not-allowed"
+                }`}
+              >
+                Batal
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      <ToastContainer />
     </div>
   );
 };

@@ -3,16 +3,107 @@ import API from "@/app/utils/API";
 import CloseSVG from "../svg/Close";
 import StarSVG from "../svg/Star";
 import { useState } from "react";
+import { formatToIDR } from "@/app/utils/helper";
+import { toast, Bounce, ToastContainer } from "react-toastify";
+import { useAuth } from "@/app/hooks/UseAuth";
+
 interface ClaimTokenModalProps {
   setShowClaimTokenModal: (condition: boolean) => void;
   showClaimTokenModal: boolean;
+  wallet: any;
 }
 
 const ClaimTokenModal: React.FC<ClaimTokenModalProps> = ({
   setShowClaimTokenModal,
   showClaimTokenModal,
+  wallet,
 }) => {
-  const [indexClaimedToken, setIndexClaimedToken] = useState<any>([]);
+  const [tokenAmount, setTokenAmount] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const auth = useAuth();
+
+  const handleExchangeToken = async () => {
+    try {
+      setIsLoading(true);
+
+      if (tokenAmount <= 0) {
+        toast.error(`Jumlah token harus lebih dari 0`, {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
+        return;
+      }
+
+      if (tokenAmount > wallet.conservationToken) {
+        toast.error(`Token tidak mencukupi`, {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+        return;
+      }
+
+      const response = await API.post(
+        `/wallet/convertConservasionToken/${auth.auth.user?.id}`,
+        {
+          token: tokenAmount,
+        },
+        {
+          headers: {
+            Authorization: `${auth.auth.token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        toast.success("Token berhasil ditukar", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
+        // setShowClaimTokenModal(false);
+        wallet.conservationToken -= tokenAmount;
+        setTokenAmount(0);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Gagal menukar token", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const calculateRupiah = (tokens: number) => {
+    // Assuming 1 token = Rp 1000
+    return tokens * 90;
+  };
+
   return (
     <div
       className={`h-screen w-full ${
@@ -30,76 +121,64 @@ const ClaimTokenModal: React.FC<ClaimTokenModalProps> = ({
           <div className="w-full h-full rounded-[21px] bg-gradient-to-tr from-[#6A5AE0]/60 via-white to-white py-5 px-3 flex flex-col justify-between items-center">
             <div className="w-full h-[12%] flex flex-col items-center">
               <h1 className=" font-montserrat font-bold text-[25px] text-[#202226]">
-                Klaim Token
+                Tukar Token
               </h1>
               <hr className="w-[60%] h-[2px] bg-gradient-to-r from-white via-[#333338] to-white border-0 " />
             </div>
 
             <div className=" w-full h-[85%] overflow-x-hidden flex flex-col gap-5">
-              {/*  */}
-              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((data: any, i: number) => {
-                return (
-                  <div
-                    key={i}
-                    className="w-full flex items-center justify-between"
-                  >
-                    <div className="w-[70%] flex items-center gap-2">
-                      <StarSVG />
-                      <div className="w-[85%] flex flex-col font-montserrat">
-                        <h1 className="w-full text-left font-bold text-xs text-[#202226]">
-                          Rafli Afrza Nugraha
-                        </h1>
-                        <h1 className="w-full text-left font-medium text-xs text-[#5B5E65]">
-                          ID : 123456789
-                        </h1>
-                      </div>
-                    </div>
-
-                    <div className=" w-[28%] h-6 flex justify-between items-center relative z-0 rounded-[5px] border-[1px] border-[#414BF1]">
-                      <button
-                        disabled={indexClaimedToken.includes(i)}
-                        onClick={() =>
-                          setIndexClaimedToken((prev: any) => {
-                            const copyArray = [...prev];
-                            const newArr = [...copyArray, i];
-                            return newArr;
-                          })
-                        }
-                        className={`h-[102%] w-[55%] rounded-[4px]  absolute z-[2] flex justify-center items-center  ${
-                          indexClaimedToken.includes(i)
-                            ? "right-0 bg-[#313680] duration-300"
-                            : "left-0 bg-[#414BF1] duration-300"
-                        }`}
-                      >
-                        <h1
-                          className={` text-[#E1E2FB] font-montserrat font-bold  ${
-                            indexClaimedToken.includes(i)
-                              ? "text-[8px]"
-                              : "text-[10px]"
-                          }`}
-                        >
-                          {indexClaimedToken.includes(i) ? "Diklaim" : "Klaim"}
-                        </h1>
-                      </button>
-                      <div className=" w-[50%] h-full flex items-center justify-center">
-                        <h1 className=" font-montserrat font-bold text-[8px] text-[#38393D]">
-                          +100
-                        </h1>
-                      </div>
-                      <div className=" w-[50%] h-full flex items-center justify-center">
-                        <h1 className="font-montserrat font-bold text-[8px] text-[#38393D]">
-                          +100
-                        </h1>
-                      </div>
-                    </div>
+              <div className="flex flex-col items-center gap-4">
+                <div className="bg-[#F5F6FA] p-4 rounded-xl">
+                  <h2 className="font-montserrat font-semibold text-lg">
+                    Jumlah Token Anda
+                  </h2>
+                  <div className="flex items-center gap-2 mt-2">
+                    <StarSVG />
+                    <span className="font-montserrat font-bold text-2xl">
+                      {wallet?.conservationToken ?? 0}
+                    </span>
                   </div>
-                );
-              })}
-              {/*  */}
+                </div>
+
+                <div className="w-full">
+                  <label className="font-montserrat text-sm mb-1 block">
+                    Jumlah Token yang Ingin Ditukar
+                  </label>
+                  <input
+                    type="number"
+                    className="w-full p-3 border border-gray-300 rounded-lg font-montserrat"
+                    placeholder="Masukkan jumlah token"
+                    value={tokenAmount || ""}
+                    onChange={(e) => setTokenAmount(Number(e.target.value))}
+                    min={0}
+                    max={wallet?.conservationToken ?? 0}
+                  />
+                </div>
+
+                <div className="w-full">
+                  <label className="font-montserrat text-sm mb-1 block">
+                    Rupiah yang Akan Diterima
+                  </label>
+                  <div className="p-3 bg-gray-100 rounded-lg font-montserrat">
+                    {formatToIDR(calculateRupiah(tokenAmount))}
+                  </div>
+                </div>
+
+                <button
+                  className={`w-full ${
+                    isLoading ? "bg-gray-400" : "bg-[#3640F0]"
+                  } text-white py-3 rounded-lg font-montserrat font-semibold mt-4`}
+                  onClick={handleExchangeToken}
+                  disabled={isLoading}
+                >
+                  {isLoading ? "Memproses..." : "Tukar Token"}
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 };

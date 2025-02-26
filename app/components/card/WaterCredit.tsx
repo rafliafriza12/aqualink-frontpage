@@ -38,16 +38,18 @@ interface WaterCreditType {
 interface WaterCreditCardProps {
   isInSwiper?: boolean;
   waterCredit: WaterCreditType;
+  link?: string;
 }
 
 const WaterCredit: React.FC<WaterCreditCardProps> = ({
   isInSwiper = false,
   waterCredit,
+  link,
 }) => {
   const isDesktop = IsDesktop();
   return (
     <Link
-      href={`/marketplace/${waterCredit?._id}`}
+      href={link ? `${link}` : `/marketplace/${waterCredit?._id}`}
       className={`${
         isInSwiper ? "w-[85%]" : "w-full"
       }  flex justify-between items-center rounded-[15px] bg-[#D9D9D9] p-3 h-[180px]`}
