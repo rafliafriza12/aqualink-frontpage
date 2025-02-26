@@ -46,9 +46,17 @@ const Navbar = () => {
   const isDesktop = IsDesktop();
   const theme = useTheme();
   const Auth = useAuth();
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [navActivePosition, setNavActivePosition] = useState<string>("home");
+  const [navActivePosition, setNavActivePosition] = useState<string>(() => {
+    if (pathname === "/") return "home";
+    if (pathname === "/marketplace") return "marketplace";
+    if (pathname === "/lapor-kebocoran") return "lapor-kebocoran";
+    if (pathname === "/profile") return "profile";
+    return "home";
+  });
+
   const mainMenu: any = [
     {
       label: "Beranda",
@@ -115,7 +123,13 @@ const Navbar = () => {
     justifyContent: "flex-end",
   }));
 
-  useEffect(() => {}, [navActivePosition]);
+  useEffect(() => {
+    if (pathname === "/") setNavActivePosition("home");
+    if (pathname === "/marketplace") setNavActivePosition("marketplace");
+    if (pathname === "/lapor-kebocoran")
+      setNavActivePosition("lapor-kebocoran");
+    if (pathname === "/profile") setNavActivePosition("profile");
+  }, [pathname]);
 
   return isDesktop ? (
     <>
