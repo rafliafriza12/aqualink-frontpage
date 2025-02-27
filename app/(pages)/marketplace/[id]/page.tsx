@@ -93,7 +93,7 @@ const WaterCreditDetail: React.FC = () => {
         }
       );
 
-      if (response.status === 201) {
+      if (response.status === 201 || response.status === 200) {
         setShowSubscribeModal(false);
         toast.success("Berhasil berlangganan!", {
           position: "top-center",
