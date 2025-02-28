@@ -17,6 +17,15 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "AquaLink",
   description: "Kredit Air dan Konservasi",
+  icons: {
+    icon: "/assets/logo/Aqualink_2.png",
+    shortcut: "/assets/logo/Aqualink_2.png",
+    apple: "/assets/logo/Aqualink_2.png",
+    other: {
+      rel: "apple-touch-icon-precomposed",
+      url: "/assets/logo/Aqualink_2.png",
+    },
+  },
 };
 
 export default function RootLayout({
@@ -32,7 +41,7 @@ export default function RootLayout({
         <Head>
           <link rel="manifest" href="/manifest.json" />
           <meta name="theme-color" content="#000000" />
-          <link rel="icon" href="/icons/icon-192x192.png" />
+          {/* <link rel="icon" href="/favicon.ico" /> */}
         </Head>
         <ProviderLayout>{children}</ProviderLayout>
       </body>
