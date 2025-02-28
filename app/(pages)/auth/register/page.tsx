@@ -12,6 +12,8 @@ import Link from "next/link";
 import API from "@/app/utils/API";
 import { IsDesktop } from "@/app/hooks";
 import { toast, Bounce, ToastContainer } from "react-toastify";
+import Aqualink from "../../../../public/assets/logo/Aqualink.png";
+import Image from "next/image";
 import LoadingButton from "@mui/lab/LoadingButton";
 const Register: React.FC = () => {
   const isDesktop = IsDesktop();
@@ -90,7 +92,7 @@ const Register: React.FC = () => {
   return isDesktop ? null : (
     <div className="w-screen flex flex-col justify-center items-center p-7 gap-10 font-poppins">
       <div data-aos={"fade-up"} data-aos-duration={"1000"} className="">
-        <Logo size={110} withText={true} />
+        <Image src={Aqualink} alt="auth-cover" width={130} height={130} />
       </div>
 
       <div className="flex flex-col gap-2 items-center">
@@ -307,7 +309,7 @@ const Register: React.FC = () => {
             Or
           </span>
         </div>
-        <Link
+        {/* <Link
           href={"#"}
           className="w-full bg-white flex justify-center items-center text-[#4999F1] font-semibold text-base rounded-xl py-2 border-[2px] border-[#EDEDED] gap-1"
         >
@@ -317,7 +319,7 @@ const Register: React.FC = () => {
           <h1 className=" font-semibold text-[#1E1E1E] text-base">
             Continue with Google
           </h1>
-        </Link>
+        </Link> */}
         <h1 className="text-[#838383]">
           Have an account ?{" "}
           <Link className="text-[#202226] font-semibold" href={"/auth/login"}>
