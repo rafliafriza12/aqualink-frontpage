@@ -1,6 +1,5 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/app/hooks/UseAuth";
 import Logo from "@/app/components/logo/Logo";
 import { useState, useEffect } from "react";
 import Google from "@/app/components/logo/Google";
@@ -15,79 +14,24 @@ import { toast, Bounce, ToastContainer } from "react-toastify";
 import Aqualink from "../../../../../public/assets/logo/Aqualink.png";
 import Image from "next/image";
 import LoadingButton from "@mui/lab/LoadingButton";
+import { RegisterCredentials } from "@/app/services/auth/auth.type";
+import { useRegister } from "@/app/services/auth/auth.mutation";
 const Register: React.FC = () => {
-  const isDesktop = IsDesktop();
   const navigation = useRouter();
-  const [fullName, setFullName] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [phone, setPhone] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [credentials, setCredentials] = useState<RegisterCredentials>({
+    email: "",
+    phone: "",
+    fullName: "",
+    password: "",
+  });
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [showConfirmPassword, setShowConfirmPassword] =
-    useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const Auth = useAuth();
+  useState<boolean>(false);
+
+  const registerMutation = useRegister();
 
   const onRegister = () => {
-    setIsLoading(!isLoading);
-    API.post("/users", {
-      email: email,
-      phone: phone,
-      fullName: fullName,
-      password: password,
-    })
-      .then((res) => {
-        setFullName("");
-        setEmail("");
-        setPhone("");
-        setPassword("");
-        setConfirmPassword("");
-        setIsLoading(false);
-        console.log(res.data.data);
-        toast.success(`${res.data.message}`, {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-          transition: Bounce,
-        });
-        setTimeout(() => {
-          navigation.replace("/auth/login");
-        }, 2000);
-      })
-      .catch((err) => {
-        setIsLoading(false);
-        toast.error(`${err.response.data.message}`, {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-          transition: Bounce,
-        });
-      });
+    registerMutation.mutate(credentials);
   };
-
-  // useEffect(() => {
-  //   // Aos.init();
-  //   // Aos.refresh();
-  //   if (Auth.auth.isAuthenticated) {
-  //     navigation.replace("/");
-  //   }
-  // }, [Auth.auth.isAuthenticated, navigation]);
-
-  // if (Auth.auth.isAuthenticated) {
-  //   navigation.replace("/");
-  //   return null;
-  // }
 
   return (
     <div className="w-screen flex flex-col justify-center items-center p-7 gap-10 font-poppins">
@@ -112,9 +56,11 @@ const Register: React.FC = () => {
           id="fullname"
           label="Nama Lengkap"
           variant="outlined"
-          value={fullName}
+          value={credentials.fullName}
           type="text"
-          onChange={(e) => setFullName(e.target.value)}
+          onChange={(e) =>
+            setCredentials((prev) => ({ ...prev, fullName: e.target.value }))
+          }
           sx={{
             width: "100%",
             "& .MuiOutlinedInput-root": {
@@ -141,9 +87,11 @@ const Register: React.FC = () => {
           id="email"
           label="Email"
           variant="outlined"
-          value={email}
+          value={credentials.email}
           type="email"
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) =>
+            setCredentials((prev) => ({ ...prev, email: e.target.value }))
+          }
           sx={{
             width: "100%",
             "& .MuiOutlinedInput-root": {
@@ -170,9 +118,11 @@ const Register: React.FC = () => {
           id="phone"
           label="No. HP"
           variant="outlined"
-          value={phone}
+          value={credentials.phone}
           type="number"
-          onChange={(e) => setPhone(e.target.value)}
+          onChange={(e) =>
+            setCredentials((prev) => ({ ...prev, phone: e.target.value }))
+          }
           sx={{
             width: "100%",
             "& .MuiOutlinedInput-root": {
@@ -200,8 +150,10 @@ const Register: React.FC = () => {
           label="Password"
           type={showPassword ? "text" : "password"} // Toggle tipe input
           variant="outlined"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          value={credentials.password}
+          onChange={(e) =>
+            setCredentials((prev) => ({ ...prev, password: e.target.value }))
+          }
           sx={{
             width: "100%",
             "& .MuiOutlinedInput-root": {
@@ -237,50 +189,8 @@ const Register: React.FC = () => {
             ),
           }}
         />
-        <TextField
-          id="confirmPassword"
-          label="Confirm Password"
-          type={showConfirmPassword ? "text" : "password"} // Toggle tipe input
-          variant="outlined"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          sx={{
-            width: "100%",
-            "& .MuiOutlinedInput-root": {
-              color: "black", // Warna teks input
-              "& fieldset": {
-                borderColor: "#EDEDED", // Warna outline default
-              },
-              "&:hover fieldset": {
-                borderColor: "#EDEDED", // Warna outline saat hover
-              },
-              "&.Mui-focused fieldset": {
-                borderColor: "#EDEDED", // Warna outline saat fokus
-              },
-            },
-            "& .MuiInputLabel-root": {
-              color: "black", // Warna label default
-              "&.Mui-focused": {
-                color: "black", // Warna label saat fokus
-              },
-            },
-          }}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  edge="end"
-                  style={{ color: "gray" }}
-                >
-                  {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-        />
         <LoadingButton
-          loading={isLoading}
+          loading={registerMutation.isPending}
           variant="outlined"
           onClick={() => onRegister()}
           sx={{
@@ -298,7 +208,7 @@ const Register: React.FC = () => {
             },
           }}
         >
-          {!isLoading ? (
+          {!registerMutation.isPending ? (
             <h1 className="text-white font-semibold text-base">Sign up</h1>
           ) : null}
         </LoadingButton>

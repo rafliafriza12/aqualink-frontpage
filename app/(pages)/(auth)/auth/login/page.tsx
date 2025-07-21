@@ -1,7 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/hooks/UseAuth";
-import { Grid, Typography } from "@mui/material";
 import Logo from "@/app/components/logo/Logo";
 import Google from "@/app/components/logo/Google";
 import { useState } from "react";
@@ -10,70 +9,25 @@ import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import LoadingButton from "@mui/lab/LoadingButton";
-import { useEffect } from "react";
 import Link from "next/link";
-import Aos from "aos";
 import { IsDesktop } from "@/app/hooks";
-import API from "@/app/utils/API";
 import Aqualink from "../../../../../public/assets/logo/Aqualink.png";
 import Image from "next/image";
-import { toast, Bounce, ToastContainer } from "react-toastify";
+import { ToastContainer } from "react-toastify";
+import { LoginCredentials } from "@/app/services/auth/auth.type";
+import { useLogin } from "@/app/services/auth/auth.mutation";
 
 const Login: React.FC = () => {
   const navigation = useRouter();
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const [credentials, setCredentials] = useState<LoginCredentials>({
+    email: "",
+    password: "",
+  });
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const Auth = useAuth();
-  const isDesktop = IsDesktop();
+  const loginMutation = useLogin();
 
   const onLogin = () => {
-    setIsLoading(true);
-    API.post("/users/login", {
-      email: email,
-      password: password,
-    })
-      .then((res) => {
-        setIsLoading(false);
-        const data: any = {
-          user: {
-            id: res.data.data._id,
-            fullName: res.data.data.fullName,
-            phone: res.data.data.phone,
-            email: res.data.data.email,
-          },
-          token: `Bearer ${res.data.data.token}`,
-        };
-        // console.log(data);
-        Auth.login(data);
-        toast.success(`${res.data.message}`, {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-          transition: Bounce,
-        });
-      })
-      .catch((err) => {
-        setIsLoading(false);
-        toast.error(`${err.response.data.message}`, {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-          transition: Bounce,
-        });
-        console.log("error", err);
-      });
+    loginMutation.mutate(credentials);
   };
 
   return (
@@ -99,9 +53,11 @@ const Login: React.FC = () => {
           id="email"
           label="Email"
           variant="outlined"
-          value={email}
+          value={credentials.email}
           type="email"
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) =>
+            setCredentials((prev) => ({ ...prev, email: e.target.value }))
+          }
           sx={{
             width: "100%",
             "& .MuiOutlinedInput-root": {
@@ -129,8 +85,10 @@ const Login: React.FC = () => {
           label="Password"
           type={showPassword ? "text" : "password"} // Toggle tipe input
           variant="outlined"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          value={credentials.password}
+          onChange={(e) =>
+            setCredentials((prev) => ({ ...prev, password: e.target.value }))
+          }
           sx={{
             width: "100%",
             "& .MuiOutlinedInput-root": {
@@ -166,14 +124,8 @@ const Login: React.FC = () => {
             ),
           }}
         />
-        {/* <button
-          onClick={() => onLogin()}
-          className="w-full bg-[#039FE1] text-center text-white font-semibold text-base rounded-xl py-3"
-        >
-          Sign in
-        </button> */}
         <LoadingButton
-          loading={isLoading}
+          loading={loginMutation.isPending}
           variant="outlined"
           onClick={() => onLogin()}
           sx={{
@@ -191,7 +143,7 @@ const Login: React.FC = () => {
             },
           }}
         >
-          {!isLoading ? (
+          {!loginMutation.isPending ? (
             <h1 className="text-white font-semibold text-base">Sign in</h1>
           ) : null}
         </LoadingButton>
@@ -201,7 +153,7 @@ const Login: React.FC = () => {
             Or
           </span>
         </div>
-        {/* <Link
+        <Link
           href={"#"}
           className="w-full bg-white flex justify-center items-center text-[#4999F1] font-semibold text-base rounded-xl py-2 border-[2px] border-[#EDEDED] gap-1"
         >
@@ -211,7 +163,7 @@ const Login: React.FC = () => {
           <h1 className=" font-semibold text-[#1E1E1E] text-base">
             Continue with Google
           </h1>
-        </Link> */}
+        </Link>
         <h1 className="text-[#838383]">
           Dont’t have an account ?{" "}
           <Link
