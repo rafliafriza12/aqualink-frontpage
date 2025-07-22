@@ -18,6 +18,7 @@
     "@mui/material": "^6.4.4",
     "@mui/material-nextjs": "^6.2.1",
     "@mui/x-charts": "^7.23.2",
+    "@react-oauth/google": "^0.12.2",
     "@reduxjs/toolkit": "^2.5.0",
     "@tanstack/react-query": "^5.83.0",
     "@tanstack/react-query-devtools": "^5.83.0",
@@ -37,6 +38,7 @@
     "react-scroll": "^1.9.2",
     "react-toastify": "^11.0.3",
     "recharts": "^2.15.1",
+    "redux-persist": "^6.0.0",
     "sweetalert2": "^11.15.3",
     "sweetalert2-react": "^0.8.3",
     "swiper": "^11.2.2"

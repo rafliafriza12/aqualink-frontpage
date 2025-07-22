@@ -30,7 +30,7 @@ const Profile: React.FC = () => {
 
   const logoutMutation = useLogout();
   const onLogout = () => {
-    logoutMutation.mutate(auth.auth.user?.id);
+    logoutMutation.mutate(auth.auth.token);
   };
 
   const handleOpenModal = () => {

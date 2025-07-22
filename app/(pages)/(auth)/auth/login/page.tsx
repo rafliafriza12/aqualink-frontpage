@@ -13,21 +13,46 @@ import Link from "next/link";
 import { IsDesktop } from "@/app/hooks";
 import Aqualink from "../../../../../public/assets/logo/Aqualink.png";
 import Image from "next/image";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast, Bounce } from "react-toastify";
 import { LoginCredentials } from "@/app/services/auth/auth.type";
-import { useLogin } from "@/app/services/auth/auth.mutation";
+import { useLogin, useLoginByGoogle } from "@/app/services/auth/auth.mutation";
+import { useGoogleLogin } from "@react-oauth/google";
 
 const Login: React.FC = () => {
-  const navigation = useRouter();
+  const TOAST_CONFIG = {
+    position: "top-center" as const,
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "light" as const,
+    transition: Bounce,
+  };
   const [credentials, setCredentials] = useState<LoginCredentials>({
     email: "",
     password: "",
+  });
+  const handleErrorGoogle = () => {
+    toast.error("Terjadi Kesalahan, Login Gagal.", TOAST_CONFIG);
+  };
+  const loginByGoogle = useLoginByGoogle();
+  const googleLogin = useGoogleLogin({
+    onSuccess: async (response: any) => await loginByGoogle(response),
+    onError: handleErrorGoogle,
+    scope:
+      "openid email profile https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile",
   });
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const loginMutation = useLogin();
 
   const onLogin = () => {
     loginMutation.mutate(credentials);
+  };
+
+  const onLoginGoogle = () => {
+    googleLogin();
   };
 
   return (
@@ -153,17 +178,38 @@ const Login: React.FC = () => {
             Or
           </span>
         </div>
-        <Link
-          href={"#"}
-          className="w-full bg-white flex justify-center items-center text-[#4999F1] font-semibold text-base rounded-xl py-2 border-[2px] border-[#EDEDED] gap-1"
+
+        <LoadingButton
+          loading={loginMutation.isPending}
+          variant="outlined"
+          onClick={() => onLoginGoogle()}
+          sx={{
+            backgroundColor: "#ffffff",
+            width: "100%",
+            height: "48px",
+            color: "#ffffff",
+            borderColor: "#838383",
+            "&:hover": {
+              backgroundColor: "#ffffff", // Warna saat hover
+              borderColor: "#838383",
+            },
+            "& .MuiLoadingButton-loadingIndicator": {
+              color: "#039FE1", // Warna indikator loading
+            },
+          }}
         >
-          <div className=" w-8 h-8">
-            <Google />
-          </div>
-          <h1 className=" font-semibold text-[#1E1E1E] text-base">
-            Continue with Google
-          </h1>
-        </Link>
+          {!loginMutation.isPending ? (
+            <>
+              <div className=" w-8 h-8">
+                <Google />
+              </div>
+              <h1 className=" font-semibold text-[#1E1E1E] text-base">
+                Continue with Google
+              </h1>
+            </>
+          ) : null}
+        </LoadingButton>
+
         <h1 className="text-[#838383]">
           Dont’t have an account ?{" "}
           <Link

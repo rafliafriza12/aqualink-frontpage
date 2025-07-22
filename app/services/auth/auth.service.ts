@@ -19,9 +19,17 @@ export const register = async (credentials: RegisterCredentials) => {
   }
 };
 
-export const logout = async (userId: string | undefined) => {
+export const logout = async (token: string | null) => {
   try {
-    const response = await API.post("/users/logout", { userId });
+    const response = await API.post(
+      "/users/logout",
+      {},
+      {
+        headers: {
+          Authorization: token,
+        },
+      }
+    );
     return response.data;
   } catch (error) {
     throw error;

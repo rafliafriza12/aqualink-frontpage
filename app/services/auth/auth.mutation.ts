@@ -5,6 +5,8 @@ import { toast, Bounce } from "react-toastify";
 import { login, register, logout } from "./auth.service";
 import { useAuth } from "@/app/hooks/UseAuth";
 import { useRouter } from "next/navigation";
+import axios from "axios";
+import API from "@/app/utils/API";
 
 const TOAST_CONFIG = {
   position: "top-center" as const,
@@ -34,9 +36,11 @@ export const useLogin = () => {
         token: `Bearer ${response.data.token}`,
       };
 
-      auth.login(userData);
       queryClient.invalidateQueries({ queryKey: ["user"] });
       toast.success(response.message, TOAST_CONFIG);
+      setTimeout(() => {
+        auth.login(userData);
+      }, 2000);
     },
     onError: (error: any) => {
       const errorMessage = error?.response?.data?.message || "Login failed";
@@ -44,6 +48,56 @@ export const useLogin = () => {
       console.error("Login error:", error);
     },
   });
+};
+
+export const useLoginByGoogle = () => {
+  const auth = useAuth();
+  const navigation = useRouter();
+
+  const login = async (response: any) => {
+    try {
+      const responseGoogle = await axios.get(
+        "https://www.googleapis.com/oauth2/v3/userinfo",
+        {
+          headers: {
+            Authorization: `Bearer ${response.access_token}`,
+          },
+        }
+      );
+
+      const serverResponse = await API.post("/users/login/google", {
+        email: responseGoogle.data.email,
+      });
+
+      const serverData = serverResponse.data;
+      if (serverData.data.status === "NEED_REGISTER") {
+        toast.success(serverData.message, TOAST_CONFIG);
+        setTimeout(() => {
+          navigation.replace("/auth/register");
+        }, 2000);
+        return;
+      }
+      const userData = {
+        user: {
+          id: serverData.data._id,
+          fullName: serverData.data.fullName,
+          phone: serverData.data.phone,
+          email: serverData.data.email,
+        },
+        token: `Bearer ${serverData.data.token}`,
+      };
+
+      toast.success(serverData.message, TOAST_CONFIG);
+      setTimeout(() => {
+        auth.login(userData);
+      }, 2000);
+    } catch (error: any) {
+      const errorMessage = error?.response?.data?.message || "Login gagal";
+      toast.error(errorMessage, TOAST_CONFIG);
+    }
+  };
+
+  return login;
 };
 
 export const useRegister = () => {
@@ -72,7 +126,7 @@ export const useLogout = () => {
       toast.success(response.message, TOAST_CONFIG);
       setTimeout(() => {
         auth.logout();
-      }, 1500);
+      }, 2000);
     },
     onError: (error: any) => {
       const errorMessage = error?.response?.data?.message || "Logout gagal";
