@@ -15,9 +15,33 @@ import Aqualink from "../../../../../public/assets/logo/Aqualink.png";
 import Image from "next/image";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { RegisterCredentials } from "@/app/services/auth/auth.type";
-import { useRegister } from "@/app/services/auth/auth.mutation";
+import {
+  useRegister,
+  useRegisterByGoogle,
+} from "@/app/services/auth/auth.mutation";
+import { useGoogleLogin } from "@react-oauth/google";
 const Register: React.FC = () => {
-  const navigation = useRouter();
+  const TOAST_CONFIG = {
+    position: "top-center" as const,
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "light" as const,
+    transition: Bounce,
+  };
+  const handleErrorGoogle = () => {
+    toast.error("Terjadi Kesalahan, Login Gagal.", TOAST_CONFIG);
+  };
+  const registerByGoogle = useRegisterByGoogle();
+  const googleRegister = useGoogleLogin({
+    onSuccess: async (response: any) => await registerByGoogle(response),
+    onError: handleErrorGoogle,
+    scope:
+      "openid email profile https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile",
+  });
   const [credentials, setCredentials] = useState<RegisterCredentials>({
     email: "",
     phone: "",
@@ -31,6 +55,10 @@ const Register: React.FC = () => {
 
   const onRegister = () => {
     registerMutation.mutate(credentials);
+  };
+
+  const onRegisterGoogle = () => {
+    googleRegister();
   };
 
   return (
@@ -219,17 +247,36 @@ const Register: React.FC = () => {
             Or
           </span>
         </div>
-        {/* <Link
-          href={"#"}
-          className="w-full bg-white flex justify-center items-center text-[#4999F1] font-semibold text-base rounded-xl py-2 border-[2px] border-[#EDEDED] gap-1"
+        <LoadingButton
+          loading={registerMutation.isPending}
+          variant="outlined"
+          onClick={() => onRegisterGoogle()}
+          sx={{
+            backgroundColor: "#ffffff",
+            width: "100%",
+            height: "48px",
+            color: "#ffffff",
+            borderColor: "#838383",
+            "&:hover": {
+              backgroundColor: "#ffffff", // Warna saat hover
+              borderColor: "#838383",
+            },
+            "& .MuiLoadingButton-loadingIndicator": {
+              color: "#039FE1", // Warna indikator loading
+            },
+          }}
         >
-          <div className=" w-8 h-8">
-            <Google />
-          </div>
-          <h1 className=" font-semibold text-[#1E1E1E] text-base">
-            Continue with Google
-          </h1>
-        </Link> */}
+          {!registerMutation.isPending ? (
+            <>
+              <div className=" w-8 h-8">
+                <Google />
+              </div>
+              <h1 className=" font-semibold text-[#1E1E1E] text-base">
+                Continue with Google
+              </h1>
+            </>
+          ) : null}
+        </LoadingButton>
         <h1 className="text-[#838383]">
           Have an account ?{" "}
           <Link className="text-[#202226] font-semibold" href={"/auth/login"}>

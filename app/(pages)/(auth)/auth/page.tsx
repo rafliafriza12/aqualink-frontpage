@@ -8,10 +8,36 @@ import Google from "@/app/components/logo/Google";
 import Image from "next/image";
 import Logo from "@/app/components/logo/Logo";
 import Aqualink from "../../../../public/assets/logo/Aqualink.png";
+import { useGoogleLogin } from "@react-oauth/google";
+import { useLoginByGoogle } from "@/app/services/auth/auth.mutation";
+import { Bounce, toast } from "react-toastify";
 const AuthCover: React.FC = () => {
-  const isDesktop = IsDesktop();
-  const Auth = useAuth();
-  const navigation = useRouter();
+  const TOAST_CONFIG = {
+    position: "top-center" as const,
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "light" as const,
+    transition: Bounce,
+  };
+
+  const handleErrorGoogle = () => {
+    toast.error("Terjadi Kesalahan, Login Gagal.", TOAST_CONFIG);
+  };
+  const loginByGoogle = useLoginByGoogle();
+  const googleLogin = useGoogleLogin({
+    onSuccess: async (response: any) => await loginByGoogle(response),
+    onError: handleErrorGoogle,
+    scope:
+      "openid email profile https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile",
+  });
+
+  const onLoginGoogle = () => {
+    googleLogin();
+  };
 
   return (
     <div className=" w-screen h-screen flex flex-col justify-center items-center p-7 gap-10 font-poppins">
@@ -40,14 +66,14 @@ const AuthCover: React.FC = () => {
           Sign up
         </Link>
 
-        {/* <div className="inline-flex items-center justify-center w-full">
+        <div className="inline-flex items-center justify-center w-full">
           <hr className="w-full h-px my-5 bg-[#D9D9D9] border-0" />
           <span className="absolute px-3 text-[#838383] -translate-x-1/2 bg-white left-1/2 font-inter">
             Or
           </span>
         </div>
-        <Link
-          href={"#"}
+        <button
+          onClick={() => onLoginGoogle()}
           className="w-full bg-white flex justify-center items-center text-[#4999F1] font-semibold text-base rounded-xl py-2 border-[2px] border-[#EDEDED] gap-1"
         >
           <div className=" w-8 h-8">
@@ -56,7 +82,7 @@ const AuthCover: React.FC = () => {
           <h1 className=" font-semibold text-[#1E1E1E] text-base">
             Continue with Google
           </h1>
-        </Link> */}
+        </button>
       </div>
     </div>
   );

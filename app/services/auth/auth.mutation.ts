@@ -50,9 +50,59 @@ export const useLogin = () => {
   });
 };
 
+export const useRegisterByGoogle = () => {
+  const auth = useAuth();
+
+  const register = async (response: any) => {
+    try {
+      const responseGoogle = await axios.get(
+        "https://www.googleapis.com/oauth2/v3/userinfo",
+        {
+          headers: {
+            Authorization: `Bearer ${response.access_token}`,
+          },
+        }
+      );
+
+      const serverResponse = await API.post("/users/register/google", {
+        email: responseGoogle.data.email,
+        fullName:
+          responseGoogle.data.given_name +
+          " " +
+          responseGoogle.data.family_name,
+      });
+
+      const serverData = serverResponse.data;
+      if (serverData.data.status) {
+        toast.error(serverData.message, TOAST_CONFIG);
+        return;
+      }
+      const userData = {
+        user: {
+          id: serverData.data._id,
+          fullName: serverData.data.fullName,
+          phone: serverData.data.phone,
+          email: serverData.data.email,
+        },
+        token: `Bearer ${serverData.data.token}`,
+      };
+      toast.success(serverData.message, TOAST_CONFIG);
+      setTimeout(() => {
+        auth.login(userData);
+      }, 2000);
+    } catch (error: any) {
+      const errorMessage = error?.response?.data?.message || "Login gagal";
+      toast.error(errorMessage, TOAST_CONFIG);
+    }
+  };
+
+  return register;
+};
+
 export const useLoginByGoogle = () => {
   const auth = useAuth();
   const navigation = useRouter();
+  const register = useRegisterByGoogle();
 
   const login = async (response: any) => {
     try {
@@ -71,10 +121,12 @@ export const useLoginByGoogle = () => {
 
       const serverData = serverResponse.data;
       if (serverData.data.status === "NEED_REGISTER") {
-        toast.success(serverData.message, TOAST_CONFIG);
-        setTimeout(() => {
-          navigation.replace("/auth/register");
-        }, 2000);
+        register(response);
+        // toast.success(serverData.message, TOAST_CONFIG);
+        // setTimeout(() => {
+        //   navigation.replace("/auth/register");
+        // }, 2000);
+
         return;
       }
       const userData = {

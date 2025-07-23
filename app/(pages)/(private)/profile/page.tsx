@@ -24,7 +24,7 @@ const Profile: React.FC = () => {
   const auth = useAuth();
   const initialName: any = auth.auth.user?.fullName
     .split(" ")
-    .map((data: any) => data[0]);
+    .map((data: any) => data[0].toUpperCase());
 
   const [openModal, setOpenModal] = useState(false);
 
