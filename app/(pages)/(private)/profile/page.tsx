@@ -1,13 +1,8 @@
 "use client";
-import { Grid, Typography, Card, CardContent } from "@mui/material";
-import Button from "@mui/material/Button";
 import Link from "next/link";
 import { useAuth } from "@/app/hooks/UseAuth";
-import Avatar from "@mui/material/Avatar";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 import HeaderMobile from "@/app/components/headers/HeaderMobile";
-import { IsDesktop } from "@/app/hooks";
 import CircleBackground from "@/app/components/svg/CircleBackground";
 import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
@@ -16,21 +11,20 @@ import KeyIcon from "@mui/icons-material/Key";
 import LiveHelpOutlinedIcon from "@mui/icons-material/LiveHelpOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import AccountBalanceOutlinedIcon from "@mui/icons-material/AccountBalanceOutlined";
-import API from "@/app/utils/API";
 import Modal from "@mui/material/Modal";
 import Fade from "@mui/material/Fade";
 import { useLogout } from "@/app/services/auth/auth.mutation";
 const Profile: React.FC = () => {
   const auth = useAuth();
-  const initialName: any = auth.auth.user?.fullName
+  const initialName: any = auth?.auth?.user?.fullName
     .split(" ")
-    .map((data: any) => data[0].toUpperCase());
+    .map((data: any) => data[0].toUpperCase()) || [""];
 
   const [openModal, setOpenModal] = useState(false);
 
   const logoutMutation = useLogout();
   const onLogout = () => {
-    logoutMutation.mutate(auth.auth.token);
+    logoutMutation.mutate();
   };
 
   const handleOpenModal = () => {
@@ -42,7 +36,7 @@ const Profile: React.FC = () => {
   };
 
   return (
-    <div className=" w-screen flex flex-col font-inter relative z-0 h-[100dvh] overflow-hidden -top-5 -left-[16px] -mb-24">
+    <div className=" w-screen flex flex-col font-inter relative z-0 min-h-[100dvh] overflow-hidden -top-5 -left-[16px] -mb-24 pb-20">
       <div className=" absolute z-[-10] ">
         <CircleBackground />
       </div>

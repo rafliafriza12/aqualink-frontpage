@@ -60,7 +60,7 @@ const Navbar = () => {
   const mainMenu: any = [
     {
       label: "Beranda",
-      path: "/",
+      path: "/beranda",
     },
     {
       label: "Marketplace",
@@ -124,7 +124,7 @@ const Navbar = () => {
   }));
 
   useEffect(() => {
-    if (pathname === "/") setNavActivePosition("home");
+    if (pathname === "/beranda") setNavActivePosition("home");
     if (pathname === "/marketplace") setNavActivePosition("marketplace");
     if (pathname === "/lapor-kebocoran")
       setNavActivePosition("lapor-kebocoran");
@@ -294,7 +294,7 @@ const Navbar = () => {
             onClick={() => setNavActivePosition("home")}
             label="Home"
             icon={
-              <Link href={"/"}>
+              <Link href={"/beranda"}>
                 <HomeOutlinedIcon
                   sx={{
                     color: navActivePosition === "home" ? "white" : "#202226",

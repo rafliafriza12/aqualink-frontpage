@@ -1,12 +1,7 @@
 "use client";
-import { IsDesktop } from "@/app/hooks";
-import { useAuth } from "@/app/hooks/UseAuth";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useEffect } from "react";
 import Google from "@/app/components/logo/Google";
 import Image from "next/image";
-import Logo from "@/app/components/logo/Logo";
 import Aqualink from "../../../../public/assets/logo/Aqualink.png";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useLoginByGoogle } from "@/app/services/auth/auth.mutation";
@@ -40,7 +35,7 @@ const AuthCover: React.FC = () => {
   };
 
   return (
-    <div className=" w-screen h-screen flex flex-col justify-center items-center p-7 gap-10 font-poppins">
+    <div className=" w-screen min-h-screen flex flex-col justify-center items-center px-7 py-10 gap-10 font-poppins">
       <div className="relative">
         <Image src={Aqualink} alt="auth-cover" width={200} height={200} />
       </div>

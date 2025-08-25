@@ -101,7 +101,6 @@ export const useRegisterByGoogle = () => {
 
 export const useLoginByGoogle = () => {
   const auth = useAuth();
-  const navigation = useRouter();
   const register = useRegisterByGoogle();
 
   const login = async (response: any) => {
@@ -173,7 +172,7 @@ export const useRegister = () => {
 export const useLogout = () => {
   const auth = useAuth();
   return useMutation({
-    mutationFn: logout,
+    mutationFn: () => logout(auth.auth.token),
     onSuccess: (response) => {
       toast.success(response.message, TOAST_CONFIG);
       setTimeout(() => {

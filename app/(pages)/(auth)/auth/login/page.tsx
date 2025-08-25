@@ -56,7 +56,7 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="w-screen h-screen flex flex-col justify-center items-center p-7 gap-10 font-poppins">
+    <div className="w-screen min-h-screen flex flex-col justify-center items-center px-7 py-10 gap-10 font-poppins">
       <div data-aos={"fade-up"} data-aos-duration={"1000"} className="">
         <Image src={Aqualink} alt="auth-cover" width={130} height={130} />
       </div>
