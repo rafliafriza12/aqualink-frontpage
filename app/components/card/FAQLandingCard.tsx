@@ -38,7 +38,7 @@ const FAQLandingCard: React.FC<IFAQCardProps> = ({ data }) => {
       </div>
       <div
         className={`w-[90%] md:w-[95%] ${
-          isActive ? "h-[150px] p-5" : "h-0"
+          isActive ? "h-[100px] p-5" : "h-0"
         } duration-500  backdrop-blur-[5px] bg-white/15 rounded-b-2xl overflow-hidden`}
       >
         <p

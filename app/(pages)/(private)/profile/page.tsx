@@ -14,6 +14,8 @@ import AccountBalanceOutlinedIcon from "@mui/icons-material/AccountBalanceOutlin
 import Modal from "@mui/material/Modal";
 import Fade from "@mui/material/Fade";
 import { useLogout } from "@/app/services/auth/auth.mutation";
+import { InteractiveGridPattern } from "@/components/magicui/interactive-grid-pattern";
+import { cn } from "@/lib/utils";
 const Profile: React.FC = () => {
   const auth = useAuth();
   const initialName: any = auth?.auth?.user?.fullName
@@ -21,9 +23,11 @@ const Profile: React.FC = () => {
     .map((data: any) => data[0].toUpperCase()) || [""];
 
   const [openModal, setOpenModal] = useState(false);
+  const [logOutLoading, setLogOtLoading] = useState<boolean>(false);
 
   const logoutMutation = useLogout();
   const onLogout = () => {
+    setLogOtLoading(true);
     logoutMutation.mutate();
   };
 
@@ -36,11 +40,20 @@ const Profile: React.FC = () => {
   };
 
   return (
-    <div className=" w-screen flex flex-col font-inter relative z-0 min-h-[100dvh] overflow-hidden -top-5 -left-[16px] -mb-24 pb-20">
-      <div className=" absolute z-[-10] ">
+    <div className=" w-full flex flex-col font-inter relative z-0 min-h-screen overflow-hidden ">
+      <InteractiveGridPattern
+        className={cn(
+          "[mask-image:radial-gradient(800px_circle_at_center,white,transparent)] fixed z-[-10] top-0 hidden lg:block"
+        )}
+        width={80}
+        height={80}
+        squares={[80, 80]}
+        squaresClassName="hover:fill-blue-500"
+      />
+      <div className="w-full fixed z-[-10] lg:hidden inset-0">
         <CircleBackground />
       </div>
-      <div className=" w-full flex flex-col gap-6 py-[18.4px] px-4">
+      <div className=" w-full flex flex-col gap-6 py-[18.4px] ">
         <HeaderMobile mode="normal" />
         <div className=" py-4 px-5 bg-[#202226] rounded-3xl flex items-center justify-between">
           <div className="w-[80%] flex items-center gap-3">
@@ -110,7 +123,7 @@ const Profile: React.FC = () => {
 
         <Link
           href={"/faq"}
-          className=" w-full h-[54px] rounded-[24px] bg-gradient-to-t from-[#ffffff]/40 via-[#2835FF]/60 to-[#2835FF] border-[1px] border-[#2835FF] flex items-center justify-between px-4"
+          className=" w-full h-[54px] rounded-[24px] bg-[#2835FF] border-[1px] border-[#2835FF] flex items-center justify-between px-4"
         >
           <div className=" flex items-center gap-3 ">
             <LiveHelpOutlinedIcon sx={{ color: "white" }} />
@@ -131,7 +144,7 @@ const Profile: React.FC = () => {
               Keluar
             </h1>
           </div>
-          {logoutMutation.isPending ? (
+          {logOutLoading ? (
             <div role="status">
               <svg
                 aria-hidden="true"

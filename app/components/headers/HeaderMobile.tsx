@@ -27,7 +27,7 @@ const HeaderMobile: React.FC<HeaderMobileProps> = ({ mode }) => {
   }, [pathName]);
   return (
     <div
-      className={`w-full flex items-center justify-between overflow-hidden py-7 px-4 rounded-[15px] relative z-0 ${
+      className={`w-full flex lg:hidden items-center justify-between overflow-hidden py-7 px-4 rounded-[15px] relative z-0 ${
         mode === "dark" ? "bg-[#202226]" : "bg-transparent"
       }`}
     >

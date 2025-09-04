@@ -7,7 +7,10 @@ import { IFaq } from "@/app/types/faq.types";
 import FAQLandingCard from "../card/FAQLandingCard";
 const FAQLandingSection: React.FC = () => {
   return (
-    <div className="w-full min-h-screen py-14 px-5 lg:py-24 md:py-20 md:px-10 overflow-hidden  bg-[#1f2375] via-[#5b62b1] to-[#1f2375] relative z-0 flex flex-col justify-center items-center  gap-5 md:gap-7 lg:gap-10">
+    <div
+      id="faq"
+      className="w-full min-h-screen py-14 px-5 lg:py-24 md:py-20 md:px-10 overflow-hidden  bg-[#1f2375] via-[#5b62b1] to-[#1f2375] relative z-0 flex flex-col justify-center items-center  gap-5 md:gap-7 lg:gap-10"
+    >
       {/* background */}
       <RetroGrid className="absolute z-[-1] bg-[#1f2375]" />
       {/* <div className="w-full h-full absolute z-[-1] inset-0 lg:hidden">

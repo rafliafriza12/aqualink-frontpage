@@ -2,28 +2,38 @@ import { IFaq } from "../types/faq.types";
 
 export const faqs: IFaq[] = [
   {
-    question: "Bagaimana PDAM Smart berbeda dari sistem tradisional?",
+    question: "Apakah Flowin hanya bisa digunakan untuk PDAM Banda Aceh?",
     answer:
-      "PDAM Smart mengintegrasikan seluruh proses menjadi ekosistem digital yang terhubung - dari registrasi online, monitoring real-time, pembayaran digital, hingga pengelolaan pengaduan dalam satu platform terintegrasi.",
+      "Ya, saat ini Flowin khusus digunakan untuk pelanggan PDAM Banda Aceh.",
   },
   {
-    question: "Bagaimana PDAM Smart berbeda dari sistem tradisional?",
+    question: "Bagaimana cara mendaftar akun Flowin?",
     answer:
-      "PDAM Smart mengintegrasikan seluruh proses menjadi ekosistem digital yang terhubung - dari registrasi online, monitoring real-time, pembayaran digital, hingga pengelolaan pengaduan dalam satu platform terintegrasi.",
+      "Pendaftaran dapat dilakukan secara online melalui aplikasi/website Flowin dengan memasukkan data pelanggan PDAM.",
   },
   {
-    question: "Bagaimana PDAM Smart berbeda dari sistem tradisional?",
+    question: "Apa saja metode pembayaran yang tersedia?",
     answer:
-      "PDAM Smart mengintegrasikan seluruh proses menjadi ekosistem digital yang terhubung - dari registrasi online, monitoring real-time, pembayaran digital, hingga pengelolaan pengaduan dalam satu platform terintegrasi.",
+      "Pembayaran dapat dilakukan secara digital melalui transfer bank, e-wallet, dan QRIS.",
   },
   {
-    question: "Bagaimana PDAM Smart berbeda dari sistem tradisional?",
+    question: "Bagaimana saya bisa memantau penggunaan air?",
     answer:
-      "PDAM Smart mengintegrasikan seluruh proses menjadi ekosistem digital yang terhubung - dari registrasi online, monitoring real-time, pembayaran digital, hingga pengelolaan pengaduan dalam satu platform terintegrasi.",
+      "Flowin menyediakan fitur monitoring real-time yang menampilkan pemakaian air harian dan bulanan langsung di dashboard.",
   },
   {
-    question: "Bagaimana PDAM Smart berbeda dari sistem tradisional?",
+    question: "Apakah saya akan mendapatkan notifikasi tagihan?",
     answer:
-      "PDAM Smart mengintegrasikan seluruh proses menjadi ekosistem digital yang terhubung - dari registrasi online, monitoring real-time, pembayaran digital, hingga pengelolaan pengaduan dalam satu platform terintegrasi.",
+      "Ya, pelanggan akan menerima notifikasi otomatis terkait tagihan dan batas waktu pembayaran.",
+  },
+  {
+    question: "Bagaimana jika ada keluhan terkait layanan air?",
+    answer:
+      "Pengguna dapat langsung mengirim pengaduan melalui fitur pengaduan cepat di Flowin tanpa harus datang ke kantor PDAM.",
+  },
+  {
+    question: "Apakah data penggunaan air saya aman?",
+    answer:
+      "Tentu, semua data pelanggan dilindungi dengan sistem keamanan dan enkripsi digital.",
   },
 ];

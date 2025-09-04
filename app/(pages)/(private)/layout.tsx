@@ -4,10 +4,10 @@ import Navbar from "@/app/components/navbar/Index";
 const PrivateLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <PrivateProvider>
-      <Container maxWidth="xl" sx={{ py: 2.3 }}>
+      <main className=" py-4 px-4 lg:px-32 lg:pt-[120px]">
         {children}
         <Navbar />
-      </Container>
+      </main>
     </PrivateProvider>
   );
 };

@@ -5,7 +5,10 @@ import { benefits } from "@/app/data/benefit";
 import { IBenefit } from "@/app/types/benefit-card.types";
 const BenefitSection: React.FC = () => {
   return (
-    <div className="w-full min-h-screen py-14 px-5 lg:py-24 md:py-20 md:px-10 flex flex-col justify-center md:justify-start items-center md:items-start gap-5 md:gap-7 lg:gap-10 text-white p-5 md:p-10 bg-gradient-to-br from-[#1f2375] to-[#4b54fb] md:bg-none md:bg-[#1f2375] relative z-0 overflow-hidden">
+    <div
+      id="benefit"
+      className="w-full min-h-screen py-14 px-5 lg:py-24 md:py-20 md:px-10 lg:px-[6vw] flex flex-col justify-center md:justify-start items-center md:items-start gap-5 md:gap-7 lg:gap-10 text-white p-5 md:p-10 bg-gradient-to-br from-[#1f2375] to-[#4b54fb] md:bg-none md:bg-[#1f2375] relative z-0 overflow-hidden"
+    >
       {/* Background */}
       <div className="hidden md:block w-[60vw] h-[60vw] rounded-full bg-[#4b54fb] blur-[200px] absolute z-[-4] top-[50%] left-[50%] translate-x-[-50%]"></div>
       <div className="w-full h-full absolute z-[-5]">

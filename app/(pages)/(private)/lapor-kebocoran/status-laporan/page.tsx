@@ -9,9 +9,7 @@ import Skeleton from "@mui/material/Skeleton";
 import { toast, Bounce, ToastContainer } from "react-toastify";
 import API from "@/app/utils/API";
 const ReportStatus: React.FC = () => {
-  const navigation = useRouter();
   const Auth = useAuth();
-  const isDesktop = IsDesktop();
   const [reportsStatus, setReportsStatus] = useState<any>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -38,6 +36,10 @@ const ReportStatus: React.FC = () => {
         });
       });
   };
+
+  useEffect(() => {
+    getReportsStatusByUserId();
+  }, []);
 
   return (
     <div className="w-full flex flex-col justify-center items-center gap-5 font-poppins">

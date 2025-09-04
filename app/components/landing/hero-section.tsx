@@ -9,7 +9,10 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 const HeroSection: React.FC = () => {
   return (
-    <div className=" w-full min-h-screen flex flex-col items-center justify-center text-white p-5 md:p-10 bg-gradient-to-br from-[#1f2375] to-[#4952FE] md:bg-none md:bg-[#1f2375] relative z-0 overflow-hidden">
+    <div
+      id="hero"
+      className=" w-full min-h-screen flex flex-col items-center justify-center text-white p-5 md:p-10 bg-gradient-to-br from-[#1f2375] to-[#4952FE] md:bg-none md:bg-[#1f2375] relative z-0 overflow-hidden"
+    >
       {/* bg shine */}
       <InteractiveGridPattern
         className={cn(

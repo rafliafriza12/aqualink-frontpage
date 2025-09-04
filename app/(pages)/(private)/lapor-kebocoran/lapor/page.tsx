@@ -118,7 +118,9 @@ const ReportFormMobile: React.FC = () => {
       <div className=" w-full flex items-center justify-between px-[10%] mt-20 relative z-0">
         <div
           className={` absolute z-[-2] ${
-            step === 0 ? "-top-16 left-[5%]" : "-top-12 left-[7.5%]"
+            step === 0
+              ? "-top-16  left-[5%] md:left-[7.6%] lg:left-[9%]"
+              : "-top-12 left-[7.5%] md:left-[8.7%] lg:left-[9.45%]"
           }  duration-300`}
         >
           <StepOneSVG
@@ -138,7 +140,9 @@ const ReportFormMobile: React.FC = () => {
         </div>
         <div
           className={` absolute z-[-2] ${
-            step === 2 ? "-top-16 right-[5%]" : "-top-12 right-[7.5%]"
+            step === 2
+              ? "-top-16 right-[5%] md:right-[7.6%] lg:right-[8.9%]"
+              : "-top-12 right-[7.5%] md:right-[8.7%] lg:right-[9.45%]"
           } duration-300`}
         >
           <StepThreeSVG
@@ -221,10 +225,10 @@ const ReportFormMobile: React.FC = () => {
                 className="w-full text-[#2C2A2A] border-[1px] border-[#51537C] rounded-[5px] focus:outline-none px-2 py-1 font-montserrat font-semibold text-sm"
               ></textarea>
             </div>
-            <div className=" w-full flex flex-col gap-2 relative z-0">
+            <div className=" w-full flex flex-col  ">
               <label
                 htmlFor="address"
-                className=" w-full flex items-center gap-2"
+                className=" w-full flex items-center gap-2 mb-2"
               >
                 <div className=" w-7 h-7 flex justify-center items-center rounded-full bg-[#3640F0]">
                   <h1 className=" font-montserrat font-semibold text-[10px] text-white">
@@ -246,7 +250,7 @@ const ReportFormMobile: React.FC = () => {
                 onChange={(e) => setAddress(e.target.value)}
                 className="w-full text-[#2C2A2A] border-[1px] border-[#51537C] rounded-[5px] focus:outline-none px-2 py-1 font-montserrat font-semibold text-sm"
               ></textarea>
-              <div className="w-full pl-[2.2%] -mt-[2.6%]">
+              <div className="w-full flex flex-col items-center">
                 {showMap && (
                   <div className=" w-[98%]">
                     <MapComponent
@@ -258,7 +262,7 @@ const ReportFormMobile: React.FC = () => {
                 )}
                 <button
                   onClick={() => setShowMap(!showMap)}
-                  className="w-[98%] h-[27px] rounded-b-[10px] bg-gradient-to-t from-[#7A81FC] to-[#3640F0] flex justify-between px-2 items-center"
+                  className="w-[98%] h-[27px] md:h-[40px] rounded-b-[10px] bg-gradient-to-t from-[#7A81FC] to-[#3640F0] flex justify-between px-2 items-center"
                 >
                   <h1 className=" font-montserrat font-semibold text-xs text-white">
                     {!showMap ? "Cari Menggunakan Peta" : "Tutup Peta"}

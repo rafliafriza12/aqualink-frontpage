@@ -1,8 +1,7 @@
 "use client";
 import API from "@/app/utils/API";
 import { useAuth } from "@/app/hooks/UseAuth";
-import { IsDesktop } from "@/app/hooks";
-import { useRouter } from "next/navigation";
+
 import { useState, useEffect } from "react";
 import HeaderMobile from "@/app/components/headers/HeaderMobile";
 import TextField from "@mui/material/TextField";
@@ -14,8 +13,6 @@ import { toast, Bounce, ToastContainer } from "react-toastify";
 
 const ChangePassword: React.FC = () => {
   const auth = useAuth();
-  const navigation = useRouter();
-  const isDesktop = IsDesktop();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] =
@@ -81,8 +78,8 @@ const ChangePassword: React.FC = () => {
   };
 
   return (
-    <div className=" w-screen flex flex-col font-inter relative z-0 h-[100dvh] overflow-hidden -top-5 -left-[16px] -mb-24">
-      <div className=" w-full flex flex-col gap-6 py-[18.4px] px-4 items-center">
+    <div className=" w-full flex flex-col font-inter relative z-0 min-h-screen overflow-hidden  ">
+      <div className=" w-full flex flex-col gap-6 py-[18.4px]  items-center">
         <HeaderMobile mode="dark" />
 
         <div className="w-full flex flex-col items-center gap-2">

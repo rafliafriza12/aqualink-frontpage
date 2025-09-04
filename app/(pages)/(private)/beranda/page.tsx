@@ -1,6 +1,6 @@
-import HomePage from "./home";
+import BerandaPage from "./_containers/beranda";
 const Home: React.FC = () => {
-  return <HomePage />;
+  return <BerandaPage />;
 };
 
 export default Home;

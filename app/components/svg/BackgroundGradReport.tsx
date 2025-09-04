@@ -1,8 +1,7 @@
 const BackgroundGradReport: React.FC = () => {
   return (
     <svg
-      width="428"
-      height="571"
+      className="w-full h-full"
       viewBox="0 0 428 571"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

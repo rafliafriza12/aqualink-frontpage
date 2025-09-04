@@ -1,8 +1,7 @@
 const CircleBackground: React.FC = () => {
   return (
     <svg
-      width="428"
-      height="926"
+      className=" w-full h-auto"
       viewBox="0 0 428 926"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

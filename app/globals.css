@@ -31,6 +31,7 @@
 
 body {
   overflow-x: hidden;
+  scroll-behavior: smooth !important;
 }
 
 .perspective-left {
@@ -98,6 +99,8 @@ body {
   .theme {
     --animate-shiny-text: shiny-text 8s infinite;
     --animate-grid: grid 15s linear infinite;
+    --animate-ripple: ripple var(--duration, 2s) ease calc(var(--i, 0) * 0.2s)
+      infinite;
   }
 }
 
@@ -112,19 +115,31 @@ body {
 
 @theme inline {
   @keyframes shiny-text {
-  0%, 90%, 100% {
-    background-position: calc(-100% - var(--shiny-width)) 0;
+    0%,
+    90%,
+    100% {
+      background-position: calc(-100% - var(--shiny-width)) 0;
     }
-  30%, 60% {
-    background-position: calc(100% + var(--shiny-width)) 0;
+    30%,
+    60% {
+      background-position: calc(100% + var(--shiny-width)) 0;
     }
   }
-  @keyframes grid {
+}
+@keyframes grid {
   0% {
     transform: translateY(-50%);
-    }
+  }
   100% {
     transform: translateY(0);
-    }
+  }
+}
+@keyframes ripple {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(0.9);
   }
 }

@@ -24,7 +24,10 @@ const SolutionSection: React.FC = () => {
     }, 500);
   };
   return (
-    <div className=" w-full min-h-screen py-14 px-5 lg:py-24 md:py-20 md:px-10 overflow-hidden relative z-1 flex flex-col justify-center items-center md:items-start gap-5 md:gap-7 lg:gap-10">
+    <div
+      id="solution"
+      className=" w-full min-h-screen py-14 px-5 lg:py-24 md:py-20 md:px-10 lg:px-[6vw] overflow-hidden relative z-1 flex flex-col justify-center items-center md:items-start gap-5 md:gap-7 lg:gap-10"
+    >
       {/* background */}
       <div className="w-full h-full absolute z-[-4] bg-[#919ae8]"></div>
       <div className=" w-full h-full absolute z-[-3] bg-gradient-to-b from-[#1f2375] via-[#5b62b1] to-[#1f2375]  inset-0"></div>

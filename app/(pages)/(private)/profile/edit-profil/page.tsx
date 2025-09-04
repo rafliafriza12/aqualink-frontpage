@@ -1,8 +1,6 @@
 "use client";
 import API from "@/app/utils/API";
 import { useAuth } from "@/app/hooks/UseAuth";
-import { IsDesktop } from "@/app/hooks";
-import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import HeaderMobile from "@/app/components/headers/HeaderMobile";
 import WhiteShillouete from "@/app/components/svg/WhiteShillouete";
@@ -12,8 +10,6 @@ import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import { toast, Bounce, ToastContainer } from "react-toastify";
 const EditProfile: React.FC = () => {
   const auth = useAuth();
-  const navigation = useRouter();
-  const isDesktop = IsDesktop();
   const [fullName, setFullName] = useState<any>(auth.auth.user?.fullName);
   const [email, setEmail] = useState<any>(auth.auth.user?.email);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -73,16 +69,16 @@ const EditProfile: React.FC = () => {
   };
 
   return (
-    <div className=" w-screen flex flex-col font-inter relative z-0 h-[100dvh] overflow-hidden -top-5 -left-[16px] -mb-24">
-      <div className=" absolute z-[-9]">
+    <div className=" w-full flex flex-col font-inter relative z-0 min-h-screen  ">
+      {/* <div className=" w-full fixed lg:hidden inset-0 z-[-9]">
         <WhiteShillouete />
-      </div>
-      <div className=" absolute z-[-10] w-full h-full bg-gradient-to-b from-[#979CEE] via-white to-transparent"></div>
+      </div> */}
+      <div className=" fixed inset-0 lg:hidden z-[-10] w-full h-full bg-gradient-to-b from-[#979CEE] via-white to-transparent"></div>
 
-      <div className=" w-full flex flex-col gap-6 py-[18.4px] px-4">
+      <div className=" w-full flex flex-col gap-6 py-[18.4px] ">
         <HeaderMobile mode="light" />
 
-        <div className="w-full h-[461px] px-6 mt-3 ">
+        <div className="w-full h-[461px]  mt-3 ">
           <div className="w-full h-full bg-[#202226] rounded-[15px] relative z-0 flex flex-col items-center">
             <div className="w-full h-full overflow-hidden absolute z-[-10] rounded-[15px]">
               {/* Absolute */}

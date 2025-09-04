@@ -2,8 +2,7 @@ import { SVGIconProps } from "@/app/types";
 const WalletSVG: React.FC<SVGIconProps> = ({ size }) => {
   return (
     <svg
-      width={size ?? 34}
-      height={size ?? 34}
+      className="w-full h-auto"
       viewBox="0 0 34 34"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

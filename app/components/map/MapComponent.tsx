@@ -51,7 +51,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
 
   return (
     <MapContainer
-      className="w-full h-[250px] rounded-md shadow-md"
+      className="w-full h-[250px] md:h-[500px] relative z-[-100] rounded-md shadow-md"
       center={[5.5530134, 95.317486]}
       zoom={zoom}
       scrollWheelZoom={scrollWheelZoom}
