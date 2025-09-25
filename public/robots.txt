@@ -1,0 +1,26 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# Host
+Host: https://aqualink.site
+
+# Sitemaps
+Sitemap: https://aqualink.site/sitemap.xml
+
+# Disallow access to admin and API routes
+Disallow: /api/
+Disallow: /admin/
+Disallow: /_next/
+Disallow: /private/
+
+# Allow access to assets
+Allow: /assets/
+Allow: /*.css$
+Allow: /*.js$
+Allow: /*.png$
+Allow: /*.jpg$
+Allow: /*.jpeg$
+Allow: /*.gif$
+Allow: /*.svg$
+Allow: /*.ico$
