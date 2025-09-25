@@ -1,11 +1,11 @@
 "use client";
 import Link from "next/link";
-import Google from "@/app/components/logo/Google";
 import Image from "next/image";
-import Aqualink from "../../../../public/assets/logo/Aqualink.png";
+import flowin from "../../../../public/assets/logo/flowin-white.png";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useLoginByGoogle } from "@/app/services/auth/auth.mutation";
 import { Bounce, toast } from "react-toastify";
+import Aurora from "@/components/Aurora";
 const AuthCover: React.FC = () => {
   const TOAST_CONFIG = {
     position: "top-center" as const,
@@ -35,49 +35,60 @@ const AuthCover: React.FC = () => {
   };
 
   return (
-    <div className=" w-screen min-h-screen flex flex-col justify-center items-center px-7 py-10 gap-10 font-poppins">
-      <div className="relative">
-        <Image src={Aqualink} alt="auth-cover" width={200} height={200} />
-      </div>
-
-      <div className="flex flex-col gap-2 items-center">
-        <h1 className=" text-[#202226] font-semibold text-2xl">Welcome</h1>
-        <h6 className=" text-center text-[#838383] text-sm">
-          Welcome back! Please enter your details.
-        </h6>
-      </div>
-
-      <div className=" w-full flex flex-col gap-5 items-center">
-        <Link
-          href={"/auth/login"}
-          className="w-full bg-[#039FE1] text-center text-white font-semibold text-base rounded-xl py-3"
-        >
-          Sign in
-        </Link>
-        <Link
-          href={"/auth/register"}
-          className="w-full bg-white text-center text-[#4999F1] font-semibold text-base rounded-xl py-3 border-[2px] border-[#EDEDED]"
-        >
-          Sign up
-        </Link>
-
-        <div className="inline-flex items-center justify-center w-full">
-          <hr className="w-full h-px my-5 bg-[#D9D9D9] border-0" />
-          <span className="absolute px-3 text-[#838383] -translate-x-1/2 bg-white left-1/2 font-inter">
-            Or
-          </span>
+    <div className="w-full ">
+      <div className=" w-full min-h-screen flex flex-col justify-center items-center gap-5 md:gap-10 font-montserrat relative z-0">
+        <div className="absolute z-[-2] w-[200%] h-[100px] bg-gradient-to-t from-[#828393] via-[#1F2374] to-[#121561] -bottom-[2%] left-1/2 -translate-x-1/2 blur-[90px]"></div>
+        <div className="absolute w-full h-[200px] md:h-[400px] lg:h-[600px] z-[-1] inset-0">
+          <Aurora
+            colorStops={["#121562", "#282E81", "#4855B2"]}
+            blend={0.5}
+            amplitude={1.0}
+            speed={0.5}
+          />
         </div>
-        <button
-          onClick={() => onLoginGoogle()}
-          className="w-full bg-white flex justify-center items-center text-[#4999F1] font-semibold text-base rounded-xl py-2 border-[2px] border-[#EDEDED] gap-1"
+        {/*  */}
+        <div
+          data-aos={"fade-up"}
+          data-aos-duration={"1000"}
+          className="flex flex-col items-center"
         >
-          <div className=" w-8 h-8">
-            <Google />
-          </div>
-          <h1 className=" font-semibold text-[#1E1E1E] text-base">
-            Continue with Google
+          <Image src={flowin} alt="auth-cover" width={40} className="h-auto" />
+          <h1 className="font-nasalization text-[#D9D9D9] md:text-2xl">
+            FLOWIN
           </h1>
-        </button>
+        </div>
+        <h1
+          data-aos={"fade-up"}
+          data-aos-duration={"1000"}
+          className=" text-[#D9D9D9] font-semibold text-2xl md:text-4xl font-montserrat px-5 md:px-5 text-center"
+        >
+          Mulai Bersama Kami
+        </h1>
+        <h1
+          data-aos={"fade-up"}
+          data-aos-duration={"1000"}
+          className=" text-[#D9D9D9] font-semibold text-xs md:text-base font-montserrat text-center px-5 md:px-0"
+        >
+          PEDULI PADA SETIAP TETES AIR YANG KITA GUNAKAN
+        </h1>
+        <div className="flex flex-col items-center gap-5 mt-5 md:mt-10 w-full px-5">
+          <Link
+            href={"/auth/login"}
+            className="group text-white py-3 w-full md:w-[460px] rounded-[10px] bg-gradient-to-r from-[#191B4D] to-[#383DD3] flex items-center justify-center font-montserrat font-extrabold gap-3 relative z-0"
+          >
+            <div className="absolute z-[-1] w-full h-full rounded-[10px] bg-gradient-to-r from-[#191B4D] to-[#383DD3] opacity-[0.4] group-hover:-translate-y-4 duration-300"></div>
+            <div className="absolute z-[-1] w-full h-full rounded-[10px] bg-gradient-to-r from-[#191B4D] to-[#383DD3] opacity-[0.2] group-hover:-translate-y-7 duration-500"></div>
+            <h1>MASUK</h1>
+          </Link>
+          <Link
+            href={"/auth/register"}
+            className=" text-[#1C2066] py-3 w-full md:w-[460px] rounded-[10px] bg-[#9CA0FF] flex items-center justify-center font-montserrat font-extrabold gap-3 group relative z-0"
+          >
+            <div className="absolute z-[-1] w-full h-full rounded-[10px] bg-[#9CA0FF] opacity-[0.4] group-hover:translate-y-4 duration-300"></div>
+            <div className="absolute z-[-1] w-full h-full rounded-[10px] bg-[#9CA0FF] opacity-[0.2] group-hover:translate-y-7 duration-500"></div>
+            <h1>DAFTAR</h1>
+          </Link>
+        </div>
       </div>
     </div>
   );

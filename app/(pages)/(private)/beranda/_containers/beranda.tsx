@@ -228,7 +228,7 @@ const BerandaPage: React.FC = () => {
           },
         }
       );
-
+      console.log(response.data.data);
       setActivity(response.data.data);
     } catch (err: any) {
       console.error("Error fetching activities:", err);
@@ -251,15 +251,15 @@ const BerandaPage: React.FC = () => {
   }, [auth.auth.isAuthenticated, selectedDate]);
 
   // useEffect #2: Interval khusus history
-  useEffect(() => {
-    if (!subscribed?.[0]?.waterCredit?._id) return;
+  // useEffect(() => {
+  //   if (!subscribed?.[0]?.waterCredit?._id) return;
 
-    const intervalId = setInterval(() => {
-      getSubscribed();
-    }, 1000); // 1 detik
+  //   const intervalId = setInterval(() => {
+  //     getSubscribed();
+  //   }, 1000); // 1 detik
 
-    return () => clearInterval(intervalId);
-  }, [subscribed]);
+  //   return () => clearInterval(intervalId);
+  // }, [subscribed]);
   return (
     <div className=" w-full  flex flex-col gap-7 items-center">
       {/* bagian I */}

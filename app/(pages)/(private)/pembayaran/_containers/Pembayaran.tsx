@@ -3,6 +3,7 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
+import CircularProgress from "@mui/material/CircularProgress";
 import { formatToIDR } from "@/app/utils/helper";
 import Image from "next/image";
 import API from "@/app/utils/API";
@@ -12,11 +13,12 @@ import { toast, Bounce, ToastContainer } from "react-toastify";
 import { useRouter } from "next/navigation";
 
 const PembayaranPage: React.FC = () => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoadingPayment, setIsLoadingPayment] = useState<boolean>(false);
+  const [isLoadingPDF, setIsLoadingPDF] = useState<boolean>(false);
   const navigation = useRouter();
   const auth = useAuth();
   const onCreateTopUp = () => {
-    setIsLoading(true);
+    setIsLoadingPayment(true);
     API.post(
       `/midtrans/topup/${auth.auth.user?.id}`,
       {
@@ -36,7 +38,6 @@ const PembayaranPage: React.FC = () => {
       { headers: { Authorization: auth.auth.token } }
     )
       .then((res) => {
-        setIsLoading(false);
         toast.success(`${res.data.message}`, {
           position: "top-center",
           autoClose: 5000,
@@ -48,12 +49,13 @@ const PembayaranPage: React.FC = () => {
           theme: "light",
           transition: Bounce,
         });
+        setIsLoadingPayment(false);
         if (res.data.redirectUrl) {
           navigation.push(res.data.redirectUrl);
         }
       })
       .catch((err) => {
-        setIsLoading(false);
+        setIsLoadingPayment(false);
         toast.error(`${err.response.data.message}`, {
           position: "top-center",
           autoClose: 5000,
@@ -66,6 +68,33 @@ const PembayaranPage: React.FC = () => {
           transition: Bounce,
         });
       });
+  };
+
+  const onDownloadPDF = () => {
+    setIsLoadingPDF(true);
+    // Simulasi download PDF - ganti dengan API call yang sebenarnya
+    setTimeout(() => {
+      // Contoh download PDF
+      const link = document.createElement("a");
+      link.href = "/path/to/invoice.pdf"; // Ganti dengan URL PDF yang sebenarnya
+      link.download = "INV-2024-08-001.pdf";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      setIsLoadingPDF(false);
+      toast.success("PDF berhasil diunduh", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+    }, 2000);
   };
   return (
     <div className="w-full flex flex-col justify-center items-center gap-5 lg:gap-10 font-poppins relative z-0 ">
@@ -173,19 +202,40 @@ const PembayaranPage: React.FC = () => {
 
           {/* Call To Action */}
           <div className=" flex items-center justify-between md:justify-start gap-5 font-montserrat">
-            <button className=" justify-center w-[48%] md:w-auto py-2 md:py-3 lg:py-4 md:px-5 rounded-lg border border-white flex items-center gap-2 hover:-translate-y-1 duration-300 bg-gradient-to-r from-[#F14141] to-transparent">
-              <FileDownloadOutlinedIcon sx={{ color: "white" }} />
+            <button
+              onClick={onDownloadPDF}
+              disabled={isLoadingPDF || isLoadingPayment}
+              className={`justify-center w-[48%] md:w-auto py-2 md:py-3 lg:py-4 md:px-5 rounded-lg border border-white flex items-center gap-2 duration-300 bg-gradient-to-r from-[#F14141] to-transparent ${
+                isLoadingPDF || isLoadingPayment
+                  ? "opacity-50 cursor-not-allowed"
+                  : "hover:-translate-y-1"
+              }`}
+            >
+              {isLoadingPDF ? (
+                <CircularProgress size={20} sx={{ color: "white" }} />
+              ) : (
+                <FileDownloadOutlinedIcon sx={{ color: "white" }} />
+              )}
               <h1 className=" text-white font-bold text-sm md:text-base">
-                Unduh PDF
+                {isLoadingPDF ? "Mengunduh..." : "Unduh PDF"}
               </h1>
             </button>
             <button
               onClick={() => onCreateTopUp()}
-              className="w-[48%] justify-center md:w-auto py-2 md:py-3 lg:py-4 md:px-10 rounded-lg border border-white flex items-center gap-2 hover:-translate-y-1 duration-300 bg-gradient-to-r from-[#414BF1] to-transparent"
+              disabled={isLoadingPayment || isLoadingPDF}
+              className={`w-[48%] justify-center md:w-auto py-2 md:py-3 lg:py-4 md:px-10 rounded-lg border border-white flex items-center gap-2 duration-300 bg-gradient-to-r from-[#414BF1] to-transparent ${
+                isLoadingPayment || isLoadingPDF
+                  ? "opacity-50 cursor-not-allowed"
+                  : "hover:-translate-y-1"
+              }`}
             >
-              <CreditCardIcon sx={{ color: "white" }} />
+              {isLoadingPayment ? (
+                <CircularProgress size={20} sx={{ color: "white" }} />
+              ) : (
+                <CreditCardIcon sx={{ color: "white" }} />
+              )}
               <h1 className=" text-white font-bold text-sm md:text-base">
-                Bayar
+                {isLoadingPayment ? "Memproses..." : "Bayar"}
               </h1>
             </button>
           </div>

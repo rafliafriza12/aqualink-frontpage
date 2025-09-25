@@ -1,6 +1,7 @@
 import PaymentsIcon from "@mui/icons-material/Payments";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import Link from "next/link";
 interface Activity {
   id: string;
   title: string;
@@ -17,7 +18,10 @@ interface ActivityCardProps {
 
 const ActivityCard: React.FC<ActivityCardProps> = ({ activity }) => {
   return (
-    <div className=" w-full  bg-transparent flex justify-between items-center bg-[#6169F5] p-3 rounded-xl text-white border-[1px] border-[#9EA3F2]">
+    <Link
+      href={activity.link ?? ""}
+      className=" w-full  bg-transparent flex justify-between items-center bg-[#6169F5] p-3 rounded-xl text-white border-[1px] border-[#9EA3F2]"
+    >
       <div className=" w-[100%] flex items-start gap-4">
         {activity.category === "TRANSAKSI" ? (
           <PaymentsIcon sx={{ color: "#ffffff" }} />
@@ -59,7 +63,7 @@ const ActivityCard: React.FC<ActivityCardProps> = ({ activity }) => {
           {activity.paymentStatus}
         </div>
       )} */}
-    </div>
+    </Link>
   );
 };
 
