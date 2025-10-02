@@ -18,10 +18,15 @@ import { toast, Bounce, ToastContainer } from "react-toastify";
 import { useRouter } from "next/navigation";
 import ActivityCard from "@/app/components/card/Activity";
 import { Inbox } from "lucide-react";
+import { useGetUserProfile } from "@/app/services/user/user.mutation";
+import { useGetHistoryUsage } from "@/app/services/history/history.mutation";
 
 const BerandaPage: React.FC = () => {
   const auth = useAuth();
   const navigation = useRouter();
+  const profileMutation = useGetUserProfile();
+  const historyMutation = useGetHistoryUsage();
+
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(
@@ -31,9 +36,9 @@ const BerandaPage: React.FC = () => {
       currentDate.getDate()
     )
   );
-  const [subscribed, setSubscribed] = useState<any>([]);
   const [activity, setActivity] = useState<any>([]);
   const [data, setData] = useState<any>([]);
+  const [userProfile, setUserProfile] = useState<any>(null);
 
   const formatLabel: any = (label: string) => {
     const dayMap: Record<string, string> = {
@@ -47,59 +52,6 @@ const BerandaPage: React.FC = () => {
     };
     return dayMap[label] || label;
   };
-
-  // const onCreateTopUp = () => {
-  //   setIsLoading(true);
-  //   API.post(
-  //     `/midtrans/topup/${auth.auth.user?.id}`,
-  //     {
-  //       customerDetails: {
-  //         userId: auth.auth.user?.id,
-  //         firstName: auth.auth.user?.fullName.split(" ")[0],
-  //         lastName: auth.auth.user?.fullName
-  //           .split(" ")
-  //           .slice(1, auth.auth.user.fullName.split(" ").length - 1)
-  //           .join(" "),
-  //         email: auth.auth.user?.email,
-  //         phone: auth.auth.user?.phone,
-  //       },
-  //       paymentMethod: "QRIS",
-  //       amount: 5000000,
-  //     },
-  //     { headers: { Authorization: auth.auth.token } }
-  //   )
-  //     .then((res) => {
-  //       setIsLoading(false);
-  //       toast.success(`${res.data.message}`, {
-  //         position: "top-center",
-  //         autoClose: 5000,
-  //         hideProgressBar: false,
-  //         closeOnClick: true,
-  //         pauseOnHover: true,
-  //         draggable: true,
-  //         progress: undefined,
-  //         theme: "light",
-  //         transition: Bounce,
-  //       });
-  //       if (res.data.redirectUrl) {
-  //         navigation.push(res.data.redirectUrl);
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       setIsLoading(false);
-  //       toast.error(`${err.response.data.message}`, {
-  //         position: "top-center",
-  //         autoClose: 5000,
-  //         hideProgressBar: false,
-  //         closeOnClick: true,
-  //         pauseOnHover: true,
-  //         draggable: true,
-  //         progress: undefined,
-  //         theme: "light",
-  //         transition: Bounce,
-  //       });
-  //     });
-  // };
 
   const getDaysInMonth = (date: Date) => {
     return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
@@ -179,41 +131,33 @@ const BerandaPage: React.FC = () => {
     return monthNames[month];
   };
 
-  const getHistoryWaterUsage = async (waterCreditId: string) => {
+  // Fetch user profile and history usage
+  const fetchUserData = async () => {
     try {
-      const response = await API.get(
-        `/history/getHistory/${auth.auth.user?.id}/${waterCreditId}?filter=minggu`,
-        {
-          headers: {
-            Authorization: auth.auth.token,
-          },
-        }
-      );
-      setData(response.data.data);
-    } catch (error) {
-      console.error("Error fetching water usage history:", error);
-    }
-  };
+      const profileResult = await profileMutation.mutateAsync();
+      if (profileResult?.data?.user) {
+        setUserProfile(profileResult.data.user);
 
-  const getSubscribed = async () => {
-    try {
-      const response = await API.get(
-        `/subscribe/getSubscribeByUserId/${auth.auth.user?.id}`,
-        {
-          headers: {
-            Authorization: auth.auth.token,
-          },
-        }
-      );
-      const subscriptions = response.data.data.subscriptions;
-      //   console.log(subscriptions);
-      setSubscribed(subscriptions);
+        // If user has meteran, fetch history usage
+        if (profileResult.data.user.meteranId?._id) {
+          const historyResult = await historyMutation.mutateAsync({
+            userId: profileResult.data.user._id,
+            meteranId: profileResult.data.user.meteranId._id,
+            filter: "minggu",
+          });
 
-      if (subscriptions?.[0]?.waterCredit?._id) {
-        await getHistoryWaterUsage(subscriptions[0].waterCredit._id);
+          if (historyResult?.data) {
+            // Transform data for chart
+            const chartData = historyResult.data.map((item: any) => ({
+              day: item._id.day,
+              totalUsedWater: Number(item.totalUsedWater.toFixed(2)),
+            }));
+            setData(chartData);
+          }
+        }
       }
     } catch (error) {
-      console.error("Error fetching subscriptions:", error);
+      console.error("Error fetching user data:", error);
     }
   };
 
@@ -239,7 +183,7 @@ const BerandaPage: React.FC = () => {
     const initializeData = async () => {
       try {
         setIsLoading(true);
-        await Promise.all([getSubscribed(), getActivity()]);
+        await Promise.all([fetchUserData(), getActivity()]);
         setIsLoading(false);
       } catch (error) {
         console.error("Error initializing data:", error);
@@ -250,16 +194,6 @@ const BerandaPage: React.FC = () => {
     initializeData();
   }, [auth.auth.isAuthenticated, selectedDate]);
 
-  // useEffect #2: Interval khusus history
-  // useEffect(() => {
-  //   if (!subscribed?.[0]?.waterCredit?._id) return;
-
-  //   const intervalId = setInterval(() => {
-  //     getSubscribed();
-  //   }, 1000); // 1 detik
-
-  //   return () => clearInterval(intervalId);
-  // }, [subscribed]);
   return (
     <div className=" w-full  flex flex-col gap-7 items-center">
       {/* bagian I */}
@@ -336,12 +270,14 @@ const BerandaPage: React.FC = () => {
               </div>
               <div>
                 <h1 className="font-extrabold text-[30px] md:text-2xl lg:text-4xl text-white w-full text-right pr-4">
-                  {formatToIDR(
-                    (3300 / 1000) *
-                      subscribed[0]?.subscriptionDetails?.totalUsedWater?.toFixed(
-                        2
+                  {userProfile?.meteranId?.kelompokPelangganId?.tarif &&
+                  userProfile?.meteranId?.pemakaianBelumTerbayar
+                    ? formatToIDR(
+                        (userProfile.meteranId.kelompokPelangganId.tarif /
+                          1000) *
+                          userProfile.meteranId.pemakaianBelumTerbayar
                       )
-                  )}
+                    : "Rp 0"}
                 </h1>
               </div>
             </div>
@@ -737,132 +673,117 @@ const BerandaPage: React.FC = () => {
           </div>
           {/* End of absolute */}
 
-          {subscribed.length > 0 ? (
-            subscribed[0]?.subscriptionDetails?.subscribeStatus ? (
-              <>
-                <div className=" flex flex-col">
-                  <div className=" flex items-center gap-1">
-                    {!isLoading ? (
-                      <OpacityIcon sx={{ color: "#93B6E8" }} />
-                    ) : (
-                      <Skeleton
-                        variant="circular"
-                        width={25}
-                        height={25}
-                        animation="pulse"
-                        sx={{ bgcolor: "#d1d5db", borderRadius: "15px" }}
-                      />
-                    )}
-
-                    {!isLoading ? (
-                      <h1 className=" font-montserrat font-bold text-[18px] text-white">
-                        Penggunaan Air
-                      </h1>
-                    ) : (
-                      <Skeleton
-                        variant="text"
-                        sx={{ fontSize: "18px", bgcolor: "#d1d5db" }}
-                        animation="pulse"
-                        width={160}
-                      />
-                    )}
-                  </div>
-                  <div className=" flex items-end gap-1 ml-2">
-                    {!isLoading ? (
-                      <h1 className=" font-montserrat font-extrabold text-[35px] text-white">
-                        {subscribed[0]?.subscriptionDetails?.totalUsedWater?.toFixed(
-                          2
-                        )}
-                      </h1>
-                    ) : (
-                      <Skeleton
-                        variant="text"
-                        sx={{ fontSize: "35px", bgcolor: "#d1d5db" }}
-                        animation="pulse"
-                        width={80}
-                      />
-                    )}
-                    {!isLoading ? (
-                      <h6 className=" font-inter text-[#8C8C8C] text-sm">
-                        Liter
-                      </h6>
-                    ) : (
-                      <Skeleton
-                        variant="text"
-                        sx={{ fontSize: "14px", bgcolor: "#d1d5db" }}
-                        animation="pulse"
-                        width={60}
-                      />
-                    )}
-                  </div>
-                </div>
-                <div className=" w-full h-[60%] ">
+          {userProfile?.meteranId ? (
+            <>
+              <div className=" flex flex-col">
+                <div className=" flex items-center gap-1">
                   {!isLoading ? (
-                    <ResponsiveContainer width="100%" height="100%">
-                      <LineChart width={300} height={100} data={data}>
-                        <defs>
-                          <linearGradient
-                            id="gradient"
-                            x1="0"
-                            y1="0"
-                            x2="1"
-                            y2="0"
-                          >
-                            <stop
-                              offset="0%"
-                              stopColor="#2983FF"
-                              stopOpacity={1}
-                            />
-                            <stop
-                              offset="100%"
-                              stopColor="#6FC3FF"
-                              stopOpacity={1}
-                            />
-                          </linearGradient>
-                        </defs>
-                        <Line
-                          type="monotone"
-                          dataKey="totalUsedWater"
-                          stroke="url(#gradient)"
-                          strokeWidth={2}
-                        />
-                        <Tooltip labelFormatter={formatLabel} />
-                        <XAxis dataKey="_id.day" tick={{ fontSize: 10 }} />
-                      </LineChart>
-                    </ResponsiveContainer>
+                    <OpacityIcon sx={{ color: "#93B6E8" }} />
                   ) : (
                     <Skeleton
-                      variant="rounded"
-                      width="100%"
-                      height="100%"
-                      sx={{ fontSize: "14px", bgcolor: "#d1d5db" }}
+                      variant="circular"
+                      width={25}
+                      height={25}
                       animation="pulse"
+                      sx={{ bgcolor: "#d1d5db", borderRadius: "15px" }}
+                    />
+                  )}
+
+                  {!isLoading ? (
+                    <h1 className=" font-montserrat font-bold text-[18px] text-white">
+                      Penggunaan Air
+                    </h1>
+                  ) : (
+                    <Skeleton
+                      variant="text"
+                      sx={{ fontSize: "18px", bgcolor: "#d1d5db" }}
+                      animation="pulse"
+                      width={160}
                     />
                   )}
                 </div>
-              </>
-            ) : (
-              <div className="h-full flex flex-col items-center justify-center gap-4">
-                <OpacityIcon sx={{ color: "#93B6E8", fontSize: 48 }} />
-                <div className="text-center">
-                  <h2 className="font-montserrat font-bold text-xl text-white mb-2">
-                    Langganan Tidak Aktif
-                  </h2>
-                  <p className="font-inter text-[#8C8C8C] text-sm">
-                    Silakan aktifkan kembali langganan Anda
-                  </p>
+                <div className=" flex items-end gap-1 ml-2">
+                  {!isLoading ? (
+                    <h1 className=" font-montserrat font-extrabold text-[35px] text-white">
+                      {userProfile?.meteranId?.totalPemakaian?.toFixed(2) ||
+                        "0.00"}
+                    </h1>
+                  ) : (
+                    <Skeleton
+                      variant="text"
+                      sx={{ fontSize: "35px", bgcolor: "#d1d5db" }}
+                      animation="pulse"
+                      width={80}
+                    />
+                  )}
+                  {!isLoading ? (
+                    <h6 className=" font-inter text-[#8C8C8C] text-sm">
+                      Liter
+                    </h6>
+                  ) : (
+                    <Skeleton
+                      variant="text"
+                      sx={{ fontSize: "14px", bgcolor: "#d1d5db" }}
+                      animation="pulse"
+                      width={60}
+                    />
+                  )}
                 </div>
               </div>
-            )
+              <div className=" w-full h-[60%] ">
+                {!isLoading ? (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart width={300} height={100} data={data}>
+                      <defs>
+                        <linearGradient
+                          id="gradient"
+                          x1="0"
+                          y1="0"
+                          x2="1"
+                          y2="0"
+                        >
+                          <stop
+                            offset="0%"
+                            stopColor="#2983FF"
+                            stopOpacity={1}
+                          />
+                          <stop
+                            offset="100%"
+                            stopColor="#6FC3FF"
+                            stopOpacity={1}
+                          />
+                        </linearGradient>
+                      </defs>
+                      <Line
+                        type="monotone"
+                        dataKey="totalUsedWater"
+                        stroke="url(#gradient)"
+                        strokeWidth={2}
+                      />
+                      <Tooltip labelFormatter={formatLabel} />
+                      <XAxis dataKey="day" tick={{ fontSize: 10 }} />
+                    </LineChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <Skeleton
+                    variant="rounded"
+                    width="100%"
+                    height="100%"
+                    sx={{ fontSize: "14px", bgcolor: "#d1d5db" }}
+                    animation="pulse"
+                  />
+                )}
+              </div>
+            </>
           ) : (
             <div className="h-full flex flex-col items-center justify-center gap-4">
               <OpacityIcon sx={{ color: "#93B6E8", fontSize: 48 }} />
               <div className="text-center">
                 <h2 className="font-montserrat font-bold text-xl text-white mb-2">
-                  Belum Ada Data Penggunaan Air
+                  Belum Ada Meteran Air
                 </h2>
                 <p className="font-inter text-[#8C8C8C] text-sm">
-                  Anda belum berlangganan kredit air
+                  Silakan lengkapi data koneksi air Anda
                 </p>
               </div>
             </div>

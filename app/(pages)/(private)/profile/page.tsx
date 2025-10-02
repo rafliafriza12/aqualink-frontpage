@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useAuth } from "@/app/hooks/UseAuth";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import HeaderMobile from "@/app/components/headers/HeaderMobile";
 import CircleBackground from "@/app/components/svg/CircleBackground";
 import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
@@ -11,21 +11,47 @@ import KeyIcon from "@mui/icons-material/Key";
 import LiveHelpOutlinedIcon from "@mui/icons-material/LiveHelpOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import AccountBalanceOutlinedIcon from "@mui/icons-material/AccountBalanceOutlined";
+import DescriptionIcon from "@mui/icons-material/Description";
+import RouterIcon from "@mui/icons-material/Router";
+import ReceiptIcon from "@mui/icons-material/Receipt";
+import TimelineIcon from "@mui/icons-material/Timeline";
+import PendingIcon from "@mui/icons-material/Pending";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import Modal from "@mui/material/Modal";
 import Fade from "@mui/material/Fade";
 import { useLogout } from "@/app/services/auth/auth.mutation";
+import { useGetUserProfile } from "@/app/services/user/user.mutation";
 import { InteractiveGridPattern } from "@/components/magicui/interactive-grid-pattern";
 import { cn } from "@/lib/utils";
+
 const Profile: React.FC = () => {
   const auth = useAuth();
+  const profileMutation = useGetUserProfile();
   const initialName: any = auth?.auth?.user?.fullName
     .split(" ")
     .map((data: any) => data[0].toUpperCase()) || [""];
 
   const [openModal, setOpenModal] = useState(false);
   const [logOutLoading, setLogOtLoading] = useState<boolean>(false);
+  const [userProfile, setUserProfile] = useState<any>(null);
 
   const logoutMutation = useLogout();
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const result = await profileMutation.mutateAsync();
+        if (result?.data) {
+          setUserProfile(result.data);
+        }
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
   const onLogout = () => {
     setLogOtLoading(true);
     logoutMutation.mutate();
@@ -38,6 +64,11 @@ const Profile: React.FC = () => {
   const handleCloseModal = () => {
     setOpenModal(false);
   };
+
+  // Determine connection status
+  const hasConnectionData = userProfile?.hasConnectionData;
+  const hasMeteran = userProfile?.hasMeteran;
+  const isVerified = userProfile?.isVerified;
 
   return (
     <div className=" w-full flex flex-col font-inter relative z-0 min-h-screen overflow-hidden ">
@@ -76,6 +107,117 @@ const Profile: React.FC = () => {
           >
             <DriveFileRenameOutlineIcon sx={{ color: "white" }} />
           </Link>
+        </div>
+
+        <div className="inline-flex items-center justify-center w-full">
+          <hr className="w-full h-[1.5px] my-5 bg-gradient-to-r from-transparent via-[#333338] to-transparent border-0 rounded-full" />
+        </div>
+
+        {/* Connection Status Section */}
+        <div className="w-full flex flex-col gap-3">
+          {/* Conditional Button: Connection Data or IoT Connection */}
+          {!hasConnectionData ? (
+            // User belum submit connection data
+            <Link
+              href="/profile/connection-data"
+              className="w-full h-[54px] rounded-[24px] bg-gradient-to-r from-[#2835FF] to-[#5F68FE] flex items-center justify-between px-4"
+            >
+              <div className="flex items-center gap-3">
+                <DescriptionIcon sx={{ color: "white" }} />
+                <div className="flex flex-col">
+                  <h1 className="font-poppins font-semibold text-sm text-white">
+                    Aktivasi Koneksi Air
+                  </h1>
+                  <p className="text-xs text-white/70">
+                    Isi data untuk pemasangan
+                  </p>
+                </div>
+              </div>
+              <ChevronRight className="text-white" />
+            </Link>
+          ) : !isVerified ? (
+            // User sudah submit, menunggu verifikasi
+            <>
+              <div className="w-full rounded-[24px] bg-[#FFA500]/20 border-2 border-[#FFA500] flex items-center justify-between px-4 py-3">
+                <div className="flex items-center gap-3">
+                  <PendingIcon sx={{ color: "#FFA500" }} />
+                  <div className="flex flex-col">
+                    <h1 className="font-poppins font-semibold text-sm text-[#FFA500]">
+                      Menunggu Verifikasi
+                    </h1>
+                    <p className="text-xs text-[#FFA500]/70">
+                      Data sedang diproses admin
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* RAB Payment Button - Available after admin verification */}
+              <Link
+                href="/profile/rab-payment"
+                className="w-full h-[54px] rounded-[24px] bg-[#202226] flex items-center justify-between px-4"
+              >
+                <div className="flex items-center gap-3">
+                  <AttachMoneyIcon sx={{ color: "white" }} />
+                  <h1 className="font-poppins font-semibold text-sm text-white">
+                    Pembayaran RAB
+                  </h1>
+                </div>
+                <ChevronRight className="text-white" />
+              </Link>
+            </>
+          ) : (
+            // User sudah verified, show IoT connection
+            <Link
+              href="/profile/iot-connection"
+              className="w-full h-[54px] rounded-[24px] bg-gradient-to-r from-green-500 to-green-600 flex items-center justify-between px-4"
+            >
+              <div className="flex items-center gap-3">
+                <RouterIcon sx={{ color: "white" }} />
+                <div className="flex flex-col">
+                  <h1 className="font-poppins font-semibold text-sm text-white">
+                    Status Koneksi IoT
+                  </h1>
+                  <p className="text-xs text-white/70">
+                    {hasMeteran ? "Meteran aktif" : "Lihat detail"}
+                  </p>
+                </div>
+              </div>
+              <ChevronRight className="text-white" />
+            </Link>
+          )}
+
+          {/* Billing Menu - Only show if has meteran */}
+          {hasMeteran && (
+            <Link
+              href="/billing"
+              className="w-full h-[54px] rounded-[24px] bg-[#202226] flex items-center justify-between px-4"
+            >
+              <div className="flex items-center gap-3">
+                <ReceiptIcon sx={{ color: "white" }} />
+                <h1 className="font-poppins font-semibold text-sm text-white">
+                  Tagihan Air
+                </h1>
+              </div>
+              <ChevronRight className="text-white" />
+            </Link>
+          )}
+
+          {/* Usage History - Only show if has meteran */}
+          {hasMeteran && (
+            <Link
+              href="/usage"
+              className="w-full h-[54px] rounded-[24px] bg-[#202226] flex items-center justify-between px-4"
+            >
+              <div className="flex items-center gap-3">
+                <TimelineIcon sx={{ color: "white" }} />
+                <h1 className="font-poppins font-semibold text-sm text-white">
+                  Riwayat Pemakaian
+                </h1>
+              </div>
+              <ChevronRight className="text-white" />
+            </Link>
+          )}
         </div>
 
         <div className="inline-flex items-center justify-center w-full">
