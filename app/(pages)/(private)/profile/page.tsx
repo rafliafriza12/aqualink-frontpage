@@ -69,6 +69,7 @@ const Profile: React.FC = () => {
   const hasConnectionData = userProfile?.hasConnectionData;
   const hasMeteran = userProfile?.hasMeteran;
   const isVerified = userProfile?.isVerified;
+  const hasPhone = userProfile?.user?.phone;
 
   return (
     <div className=" w-full flex flex-col font-inter relative z-0 min-h-screen overflow-hidden ">
@@ -113,28 +114,80 @@ const Profile: React.FC = () => {
           <hr className="w-full h-[1.5px] my-5 bg-gradient-to-r from-transparent via-[#333338] to-transparent border-0 rounded-full" />
         </div>
 
+        {/* Warning: No Phone Number - Can't Upload Connection Data */}
+        {!hasPhone && !hasConnectionData && (
+          <div className="w-full rounded-[24px] bg-[#FF4444]/20 border-2 border-[#FF4444] flex items-start gap-3 px-4 py-3">
+            <div className="flex-shrink-0 mt-0.5">
+              <svg
+                className="w-5 h-5 text-[#FF4444]"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+            <div className="flex flex-col flex-1">
+              <h1 className="font-poppins font-semibold text-sm text-[#FF4444]">
+                Nomor HP Belum Terdaftar
+              </h1>
+              <p className="text-xs text-[#FF4444]/80 mt-1">
+                Anda harus melengkapi nomor HP terlebih dahulu sebelum dapat
+                mengupload data aktivasi koneksi. Nomor HP diperlukan untuk
+                proses verifikasi dan komunikasi.
+              </p>
+              <Link
+                href="/profile/edit-profil"
+                className="mt-2 text-xs font-semibold text-[#FF4444] underline"
+              >
+                Tambahkan Nomor HP Sekarang →
+              </Link>
+            </div>
+          </div>
+        )}
+
         {/* Connection Status Section */}
         <div className="w-full flex flex-col gap-3">
           {/* Conditional Button: Connection Data or IoT Connection */}
           {!hasConnectionData ? (
             // User belum submit connection data
-            <Link
-              href="/profile/connection-data"
-              className="w-full h-[54px] rounded-[24px] bg-gradient-to-r from-[#2835FF] to-[#5F68FE] flex items-center justify-between px-4"
-            >
-              <div className="flex items-center gap-3">
-                <DescriptionIcon sx={{ color: "white" }} />
-                <div className="flex flex-col">
-                  <h1 className="font-poppins font-semibold text-sm text-white">
-                    Aktivasi Koneksi Air
-                  </h1>
-                  <p className="text-xs text-white/70">
-                    Isi data untuk pemasangan
-                  </p>
+            hasPhone ? (
+              <Link
+                href="/profile/connection-data"
+                className="w-full h-[54px] rounded-[24px] bg-gradient-to-r from-[#2835FF] to-[#5F68FE] flex items-center justify-between px-4"
+              >
+                <div className="flex items-center gap-3">
+                  <DescriptionIcon sx={{ color: "white" }} />
+                  <div className="flex flex-col">
+                    <h1 className="font-poppins font-semibold text-sm text-white">
+                      Aktivasi Koneksi Air
+                    </h1>
+                    <p className="text-xs text-white/70">
+                      Isi data untuk pemasangan
+                    </p>
+                  </div>
                 </div>
+                <ChevronRight className="text-white" />
+              </Link>
+            ) : (
+              <div className="w-full h-[54px] rounded-[24px] bg-gray-400 flex items-center justify-between px-4 opacity-60 cursor-not-allowed">
+                <div className="flex items-center gap-3">
+                  <DescriptionIcon sx={{ color: "white" }} />
+                  <div className="flex flex-col">
+                    <h1 className="font-poppins font-semibold text-sm text-white">
+                      Aktivasi Koneksi Air
+                    </h1>
+                    <p className="text-xs text-white/70">
+                      Lengkapi nomor HP terlebih dahulu
+                    </p>
+                  </div>
+                </div>
+                <ChevronRight className="text-white" />
               </div>
-              <ChevronRight className="text-white" />
-            </Link>
+            )
           ) : !isVerified ? (
             // User sudah submit, menunggu verifikasi
             <>
@@ -152,6 +205,20 @@ const Profile: React.FC = () => {
                 </div>
               </div>
 
+              {/* View Connection Data Button */}
+              <Link
+                href="/profile/view-connection-data"
+                className="w-full h-[54px] rounded-[24px] bg-[#202226] flex items-center justify-between px-4"
+              >
+                <div className="flex items-center gap-3">
+                  <DescriptionIcon sx={{ color: "white" }} />
+                  <h1 className="font-poppins font-semibold text-sm text-white">
+                    Lihat Data Aktivasi
+                  </h1>
+                </div>
+                <ChevronRight className="text-white" />
+              </Link>
+
               {/* RAB Payment Button - Available after admin verification */}
               <Link
                 href="/profile/rab-payment"
@@ -167,24 +234,40 @@ const Profile: React.FC = () => {
               </Link>
             </>
           ) : (
-            // User sudah verified, show IoT connection
-            <Link
-              href="/profile/iot-connection"
-              className="w-full h-[54px] rounded-[24px] bg-gradient-to-r from-green-500 to-green-600 flex items-center justify-between px-4"
-            >
-              <div className="flex items-center gap-3">
-                <RouterIcon sx={{ color: "white" }} />
-                <div className="flex flex-col">
+            // User sudah verified, show IoT connection + view data
+            <>
+              {/* View Connection Data Button */}
+              <Link
+                href="/profile/view-connection-data"
+                className="w-full h-[54px] rounded-[24px] bg-[#202226] flex items-center justify-between px-4"
+              >
+                <div className="flex items-center gap-3">
+                  <DescriptionIcon sx={{ color: "white" }} />
                   <h1 className="font-poppins font-semibold text-sm text-white">
-                    Status Koneksi IoT
+                    Lihat Data Aktivasi
                   </h1>
-                  <p className="text-xs text-white/70">
-                    {hasMeteran ? "Meteran aktif" : "Lihat detail"}
-                  </p>
                 </div>
-              </div>
-              <ChevronRight className="text-white" />
-            </Link>
+                <ChevronRight className="text-white" />
+              </Link>
+
+              <Link
+                href="/profile/iot-connection"
+                className="w-full h-[54px] rounded-[24px] bg-gradient-to-r from-green-500 to-green-600 flex items-center justify-between px-4"
+              >
+                <div className="flex items-center gap-3">
+                  <RouterIcon sx={{ color: "white" }} />
+                  <div className="flex flex-col">
+                    <h1 className="font-poppins font-semibold text-sm text-white">
+                      Status Koneksi IoT
+                    </h1>
+                    <p className="text-xs text-white/70">
+                      {hasMeteran ? "Meteran aktif" : "Lihat detail"}
+                    </p>
+                  </div>
+                </div>
+                <ChevronRight className="text-white" />
+              </Link>
+            </>
           )}
 
           {/* Billing Menu - Only show if has meteran */}

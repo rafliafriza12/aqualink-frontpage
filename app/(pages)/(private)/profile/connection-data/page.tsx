@@ -59,9 +59,15 @@ const ConnectionDataPage = () => {
   ) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Check if file is PDF
-      if (file.type !== "application/pdf") {
-        toast.error("Hanya file PDF yang diperbolehkan");
+      // Check if file is PDF or Image
+      const allowedTypes = [
+        "application/pdf",
+        "image/jpeg",
+        "image/jpg",
+        "image/png",
+      ];
+      if (!allowedTypes.includes(file.type)) {
+        toast.error("Hanya file PDF atau gambar (JPG, PNG) yang diperbolehkan");
         return;
       }
       // Check file size (max 5MB)
@@ -94,7 +100,7 @@ const ConnectionDataPage = () => {
     }
 
     if (!files.nikFile || !files.kkFile || !files.imbFile) {
-      toast.error("Semua dokumen PDF wajib diunggah");
+      toast.error("Semua dokumen (PDF/Gambar) wajib diunggah");
       return;
     }
 
@@ -174,12 +180,13 @@ const ConnectionDataPage = () => {
               {/* NIK File */}
               <div>
                 <label className="text-white text-sm font-medium mb-2 block">
-                  Upload NIK (PDF) <span className="text-red-500">*</span>
+                  Upload NIK (PDF/Gambar){" "}
+                  <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <input
                     type="file"
-                    accept=".pdf"
+                    accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/jpg,image/png"
                     onChange={(e) => handleFileChange(e, "nikFile")}
                     className="hidden"
                     id="nikFile"
@@ -189,7 +196,9 @@ const ConnectionDataPage = () => {
                     className="w-full bg-[#2A2D31] text-gray-400 px-4 py-3 rounded-lg flex items-center justify-between cursor-pointer hover:bg-[#333740] transition"
                   >
                     <span className="text-sm">
-                      {files.nikFile ? files.nikFile.name : "Pilih file PDF"}
+                      {files.nikFile
+                        ? files.nikFile.name
+                        : "Pilih file PDF/Gambar"}
                     </span>
                     {files.nikFile ? (
                       <CheckCircle className="text-green-500" />
@@ -219,12 +228,12 @@ const ConnectionDataPage = () => {
               {/* KK File */}
               <div>
                 <label className="text-white text-sm font-medium mb-2 block">
-                  Upload KK (PDF) <span className="text-red-500">*</span>
+                  Upload KK (PDF/Gambar) <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <input
                     type="file"
-                    accept=".pdf"
+                    accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/jpg,image/png"
                     onChange={(e) => handleFileChange(e, "kkFile")}
                     className="hidden"
                     id="kkFile"
@@ -234,7 +243,9 @@ const ConnectionDataPage = () => {
                     className="w-full bg-[#2A2D31] text-gray-400 px-4 py-3 rounded-lg flex items-center justify-between cursor-pointer hover:bg-[#333740] transition"
                   >
                     <span className="text-sm">
-                      {files.kkFile ? files.kkFile.name : "Pilih file PDF"}
+                      {files.kkFile
+                        ? files.kkFile.name
+                        : "Pilih file PDF/Gambar"}
                     </span>
                     {files.kkFile ? (
                       <CheckCircle className="text-green-500" />
@@ -307,12 +318,13 @@ const ConnectionDataPage = () => {
               {/* IMB File */}
               <div>
                 <label className="text-white text-sm font-medium mb-2 block">
-                  Upload IMB (PDF) <span className="text-red-500">*</span>
+                  Upload IMB (PDF/Gambar){" "}
+                  <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <input
                     type="file"
-                    accept=".pdf"
+                    accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/jpg,image/png"
                     onChange={(e) => handleFileChange(e, "imbFile")}
                     className="hidden"
                     id="imbFile"
@@ -322,7 +334,9 @@ const ConnectionDataPage = () => {
                     className="w-full bg-[#2A2D31] text-gray-400 px-4 py-3 rounded-lg flex items-center justify-between cursor-pointer hover:bg-[#333740] transition"
                   >
                     <span className="text-sm">
-                      {files.imbFile ? files.imbFile.name : "Pilih file PDF"}
+                      {files.imbFile
+                        ? files.imbFile.name
+                        : "Pilih file PDF/Gambar"}
                     </span>
                     {files.imbFile ? (
                       <CheckCircle className="text-green-500" />

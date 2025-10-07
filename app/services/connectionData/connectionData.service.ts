@@ -29,3 +29,46 @@ export const getMyConnectionData = async (token: string) => {
     throw error;
   }
 };
+
+// Assign technician to connection data (Admin only)
+export const assignTechnician = async (
+  connectionDataId: string,
+  technicianId: string,
+  token: string
+) => {
+  try {
+    const response = await API.put(
+      `/connection-data/${connectionDataId}/assign-technician`,
+      { technicianId },
+      {
+        headers: {
+          Authorization: token,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// Unassign technician from connection data (Admin only)
+export const unassignTechnician = async (
+  connectionDataId: string,
+  token: string
+) => {
+  try {
+    const response = await API.put(
+      `/connection-data/${connectionDataId}/unassign-technician`,
+      {},
+      {
+        headers: {
+          Authorization: token,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

@@ -7,11 +7,13 @@ import WhiteShillouete from "@/app/components/svg/WhiteShillouete";
 import TriangleParticle from "@/app/components/svg/TriangleParticle";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
+import PhoneOutlinedIcon from "@mui/icons-material/PhoneOutlined";
 import { toast, Bounce, ToastContainer } from "react-toastify";
 const EditProfile: React.FC = () => {
   const auth = useAuth();
   const [fullName, setFullName] = useState<any>(auth.auth.user?.fullName);
   const [email, setEmail] = useState<any>(auth.auth.user?.email);
+  const [phone, setPhone] = useState<any>(auth.auth.user?.phone || "");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const initialName: any = auth.auth.user?.fullName
     .split(" ")
@@ -24,6 +26,7 @@ const EditProfile: React.FC = () => {
       {
         newFullName: fullName,
         newEmail: email,
+        newPhone: phone,
       },
       { headers: { Authorization: auth.auth.token } }
     )
@@ -142,6 +145,25 @@ const EditProfile: React.FC = () => {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
+                    />
+                  </div>
+                </div>
+                <div className=" w-full flex flex-col gap-1">
+                  <label
+                    htmlFor="phone"
+                    className=" font-poppins font-semibold text-sm text-[#F5F5F5]"
+                  >
+                    Nomor HP
+                  </label>
+                  <div className=" w-full flex items-center gap-2 p-3 bg-white rounded-xl">
+                    <PhoneOutlinedIcon sx={{ color: "#6A5AE0" }} />
+                    <input
+                      id="phone"
+                      className="w-[83%] focus:outline-none font-poppins font-semibold text-sm text-[#2C2A2A]"
+                      type="tel"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      placeholder="08123456789"
                     />
                   </div>
                 </div>

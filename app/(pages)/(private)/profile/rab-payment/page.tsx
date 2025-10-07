@@ -18,14 +18,12 @@ import {
   Payment,
 } from "@mui/icons-material";
 import Swal from "sweetalert2";
-import { useMidtrans } from "@/app/hooks/useMidtrans";
 import { toast, Bounce } from "react-toastify";
 
 const RABPaymentPage = () => {
   const router = useRouter();
   const myRABMutation = useGetMyRAB();
   const createPaymentMutation = useCreateRABPayment();
-  const { isSnapLoaded, openSnap } = useMidtrans();
 
   const [rabData, setRabData] = useState<any>(null);
   const [isLoadingPayment, setIsLoadingPayment] = useState<boolean>(false);
@@ -37,7 +35,9 @@ const RABPaymentPage = () => {
   const fetchRABData = async () => {
     try {
       const result = await myRABMutation.mutateAsync();
+      console.log("RAB Data fetched:", result);
       if (result?.data) {
+        console.log("Setting RAB data:", result.data);
         setRabData(result.data);
       }
     } catch (error: any) {
@@ -49,7 +49,7 @@ const RABPaymentPage = () => {
           icon: "info",
           confirmButtonColor: "#2835FF",
         }).then(() => {
-          router.back();
+          router.push("/profile");
         });
       }
     }
@@ -75,15 +75,9 @@ const RABPaymentPage = () => {
   };
 
   const handlePayment = async () => {
-    if (!isSnapLoaded) {
-      toast.error("Sistem pembayaran sedang dimuat, mohon tunggu...", {
-        position: "top-center",
-        autoClose: 3000,
-        theme: "light",
-        transition: Bounce,
-      });
-      return;
-    }
+    console.log("💳 Payment button clicked");
+    console.log("rabData:", rabData);
+    console.log("totalBiaya:", rabData?.totalBiaya);
 
     const result = await Swal.fire({
       title: "Konfirmasi Pembayaran RAB",
@@ -98,7 +92,7 @@ const RABPaymentPage = () => {
               )}</span>
             </div>
           </div>
-          <p class="text-sm text-gray-600">Setelah pembayaran dikonfirmasi, proses pemasangan akan dilanjutkan oleh teknisi.</p>
+          <p class="text-sm text-gray-600">Anda akan diarahkan ke halaman pembayaran Midtrans untuk menyelesaikan transaksi.</p>
         </div>
       `,
       icon: "question",
@@ -113,53 +107,35 @@ const RABPaymentPage = () => {
       try {
         setIsLoadingPayment(true);
 
-        // Create Midtrans payment
+        // Create Midtrans payment via backend
         const response = await createPaymentMutation.mutateAsync(rabData._id);
-        const { token: snapToken, data } = response;
 
-        console.log("RAB Payment:", {
-          orderId: data.orderId,
-          amount: data.grossAmount,
+        console.log("Full API Response:", response);
+        console.log("Payment Data:", response.data);
+
+        const { redirectUrl, orderId, grossAmount, token } = response.data;
+
+        console.log("RAB Payment created:", {
+          orderId: orderId,
+          amount: grossAmount,
+          token: token,
+          redirectUrl: redirectUrl,
         });
 
-        // Open Midtrans Snap popup
-        openSnap(snapToken, {
-          onSuccess: (result) => {
-            console.log("Payment success:", result);
-            Swal.fire({
-              title: "Pembayaran Berhasil!",
-              text: "RAB sudah dibayar. Teknisi akan segera memproses pemasangan.",
-              icon: "success",
-              confirmButtonColor: "#2835FF",
-            }).then(() => {
-              router.push("/profile");
-            });
-          },
-          onPending: (result) => {
-            console.log("Payment pending:", result);
-            toast.info("Pembayaran sedang diproses...", {
-              position: "top-center",
-              autoClose: 3000,
-              theme: "light",
-              transition: Bounce,
-            });
-            setIsLoadingPayment(false);
-          },
-          onError: (result) => {
-            console.error("Payment error:", result);
-            toast.error("Pembayaran gagal, silakan coba lagi", {
-              position: "top-center",
-              autoClose: 3000,
-              theme: "light",
-              transition: Bounce,
-            });
-            setIsLoadingPayment(false);
-          },
-          onClose: () => {
-            console.log("Payment popup closed");
-            setIsLoadingPayment(false);
-          },
-        });
+        // Redirect to Midtrans payment page
+        if (redirectUrl) {
+          console.log("✅ Redirecting to Midtrans:", redirectUrl);
+          window.location.href = redirectUrl;
+        } else {
+          console.error("❌ No redirectUrl found in response");
+          toast.error("Payment URL tidak tersedia", {
+            position: "top-center",
+            autoClose: 3000,
+            theme: "light",
+            transition: Bounce,
+          });
+          setIsLoadingPayment(false);
+        }
       } catch (error: any) {
         console.error("Payment error:", error);
         toast.error(
@@ -177,8 +153,21 @@ const RABPaymentPage = () => {
   };
 
   const handleDownloadRAB = () => {
-    if (rabData?.rabFile) {
-      window.open(rabData.rabFile, "_blank");
+    console.log("🔍 Download RAB clicked");
+    console.log("RAB Data:", rabData);
+    console.log("rabUrl:", rabData?.rabUrl);
+
+    if (rabData?.rabUrl) {
+      console.log("✅ Opening RAB URL:", rabData.rabUrl);
+      window.open(rabData.rabUrl, "_blank");
+    } else {
+      console.error("❌ RAB URL not found");
+      toast.error("Dokumen RAB tidak tersedia", {
+        position: "top-center",
+        autoClose: 3000,
+        theme: "light",
+        transition: Bounce,
+      });
     }
   };
 
@@ -338,14 +327,12 @@ const RABPaymentPage = () => {
               {!rabData.isPaid && (
                 <button
                   onClick={handlePayment}
-                  disabled={isLoadingPayment || !isSnapLoaded}
+                  disabled={isLoadingPayment}
                   className="w-full bg-gradient-to-r from-[#5F68FE] to-[#2835FF] text-white py-4 rounded-xl font-bold text-lg hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   <Payment />
                   {isLoadingPayment
                     ? "Memproses..."
-                    : !isSnapLoaded
-                    ? "Loading..."
                     : `Bayar ${formatCurrency(rabData.totalBiaya)}`}
                 </button>
               )}
