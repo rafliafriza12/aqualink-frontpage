@@ -40,6 +40,27 @@ const BerandaPage: React.FC = () => {
   const [data, setData] = useState<any>([]);
   const [userProfile, setUserProfile] = useState<any>(null);
 
+  // Calculate water bill with tiered pricing
+  const calculateWaterBill = (usageM3: number): number => {
+    if (!userProfile?.meteranId?.kelompokPelangganId) return 0;
+
+    const kelompok = userProfile.meteranId.kelompokPelangganId;
+    const biayaBeban = kelompok.biayaBeban || 0;
+    const hargaDibawah10 = kelompok.hargaPenggunaanDibawah10 || 0;
+    const hargaDiatas10 = kelompok.hargaPenggunaanDiatas10 || 0;
+
+    let totalBiaya = biayaBeban;
+
+    if (usageM3 <= 10) {
+      totalBiaya += usageM3 * hargaDibawah10;
+    } else {
+      totalBiaya += 10 * hargaDibawah10;
+      totalBiaya += (usageM3 - 10) * hargaDiatas10;
+    }
+
+    return totalBiaya;
+  };
+
   const formatLabel: any = (label: string) => {
     const dayMap: Record<string, string> = {
       S: "Senin",
@@ -270,12 +291,11 @@ const BerandaPage: React.FC = () => {
               </div>
               <div>
                 <h1 className="font-extrabold text-[30px] md:text-2xl lg:text-4xl text-white w-full text-right pr-4">
-                  {userProfile?.meteranId?.kelompokPelangganId?.tarif &&
-                  userProfile?.meteranId?.pemakaianBelumTerbayar
+                  {userProfile?.meteranId?.pemakaianBelumTerbayar
                     ? formatToIDR(
-                        (userProfile.meteranId.kelompokPelangganId.tarif /
-                          1000) *
-                          userProfile.meteranId.pemakaianBelumTerbayar
+                        calculateWaterBill(
+                          userProfile.meteranId.pemakaianBelumTerbayar / 1000
+                        )
                       )
                     : "Rp 0"}
                 </h1>

@@ -40,6 +40,30 @@ const Monitoring: React.FC = () => {
   const [anchorElBar, setAnchorElBar] = useState<null | HTMLElement>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  // Calculate water bill based on tiered pricing
+  const calculateWaterBill = (usageM3: number): number => {
+    if (!userProfile?.meteranId?.kelompokPelangganId) return 0;
+
+    const kelompok = userProfile.meteranId.kelompokPelangganId;
+    const biayaBeban = kelompok.biayaBeban || 0;
+    const hargaDibawah10 = kelompok.hargaPenggunaanDibawah10 || 0;
+    const hargaDiatas10 = kelompok.hargaPenggunaanDiatas10 || 0;
+
+    let totalBiaya = biayaBeban;
+
+    if (usageM3 <= 10) {
+      // Semua penggunaan di bawah atau sama dengan 10 m³
+      totalBiaya += usageM3 * hargaDibawah10;
+    } else {
+      // 10 m³ pertama dengan harga dibawah 10
+      totalBiaya += 10 * hargaDibawah10;
+      // Sisanya dengan harga diatas 10
+      totalBiaya += (usageM3 - 10) * hargaDiatas10;
+    }
+
+    return totalBiaya;
+  };
+
   const formatLabel: any = (label: string) => {
     const dayMap: Record<string, string> = {
       S: "Senin",
@@ -526,19 +550,48 @@ const Monitoring: React.FC = () => {
                   Kategori Pengguna
                 </h1>
                 <h1 className=" text-white font-bold text-lg md:text-xl">
-                  {userProfile?.meteranId?.kelompokPelangganId?.nama ?? "-"}
+                  {userProfile?.meteranId?.kelompokPelangganId?.namaKelompok ??
+                    "-"}
                 </h1>
               </div>
               <div className=" flex flex-col gap-1">
                 <h1 className=" text-white/60 font-semibold text-xs md:text-sm">
-                  Harga Kategori
+                  Tarif 0-10 m³
                 </h1>
-                <h1 className=" text-[#5073FF] font-bold text-lg md:text-xl">
-                  {userProfile?.meteranId?.kelompokPelangganId?.tarif
+                <h1 className=" text-[#5073FF] font-bold text-base md:text-lg">
+                  {userProfile?.meteranId?.kelompokPelangganId
+                    ?.hargaPenggunaanDibawah10
                     ? `${formatToIDR(
-                        userProfile.meteranId.kelompokPelangganId.tarif
-                      )} / 1000 L`
+                        userProfile.meteranId.kelompokPelangganId
+                          .hargaPenggunaanDibawah10
+                      )} / m³`
                     : "-"}
+                </h1>
+              </div>
+              <div className=" flex flex-col gap-1">
+                <h1 className=" text-white/60 font-semibold text-xs md:text-sm">
+                  Tarif {">"}10 m³
+                </h1>
+                <h1 className=" text-[#5073FF] font-bold text-base md:text-lg">
+                  {userProfile?.meteranId?.kelompokPelangganId
+                    ?.hargaPenggunaanDiatas10
+                    ? `${formatToIDR(
+                        userProfile.meteranId.kelompokPelangganId
+                          .hargaPenggunaanDiatas10
+                      )} / m³`
+                    : "-"}
+                </h1>
+              </div>
+              <div className=" flex flex-col gap-1">
+                <h1 className=" text-white/60 font-semibold text-xs md:text-sm">
+                  Biaya Beban
+                </h1>
+                <h1 className=" text-[#5073FF] font-bold text-base md:text-lg">
+                  {userProfile?.meteranId?.kelompokPelangganId?.biayaBeban
+                    ? formatToIDR(
+                        userProfile.meteranId.kelompokPelangganId.biayaBeban
+                      )
+                    : "Rp 0"}
                 </h1>
               </div>
               <div className=" flex flex-col gap-1">
@@ -688,12 +741,11 @@ const Monitoring: React.FC = () => {
                   Estimasi Tagihan
                 </h1>
                 <h1 className="text-white font-semibold text-4xl">
-                  {userProfile?.meteranId?.kelompokPelangganId?.tarif &&
-                  monitoringStats?.prediction?.totalProjected
+                  {monitoringStats?.prediction?.totalProjected
                     ? formatToIDR(
-                        (userProfile.meteranId.kelompokPelangganId.tarif /
-                          1000) *
-                          monitoringStats.prediction.totalProjected
+                        calculateWaterBill(
+                          monitoringStats.prediction.totalProjected / 1000
+                        )
                       )
                     : "Rp 0"}
                 </h1>
